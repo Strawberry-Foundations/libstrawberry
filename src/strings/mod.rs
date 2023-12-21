@@ -14,9 +14,8 @@ fn load_language_file(path: &str) -> String {
 }
 
 impl Strings {
-    pub fn new(language: &str, path: &str) -> Strings {
-        let language_strings = load_language_file(path);
-        let lang_object = serde_yaml::from_str(&language_strings).unwrap();
+    pub fn new(language: &str, lang_strings: &str) -> Strings {
+        let lang_object = serde_yaml::from_str(&lang_strings).unwrap();
 
         let str_loader = Strings {
             language: language.to_string(),
