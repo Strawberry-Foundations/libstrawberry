@@ -6,7 +6,7 @@ pub struct Strings {
     pub lang_str_object: Value,
 }
 
-fn load_language_file(path: &str) -> String {
+pub fn load_language_file(path: &str) -> String {
     let lang_yml =
         fs::read_to_string(path)
             .expect("Could not read language strings");
