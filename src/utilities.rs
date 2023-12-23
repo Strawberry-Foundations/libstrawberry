@@ -16,6 +16,6 @@ pub fn current_time(format: &str) -> String {
     local.format(format).to_string()
 }
 
-fn type_of<T>(_: T) -> &'static str {
+pub fn type_of<T>(_: T) -> &'static str {
     type_name::<T>()
 }
