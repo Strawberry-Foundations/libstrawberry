@@ -10,10 +10,8 @@ license = "AGPL-3.0-only"
 
 [dependencies]
 reqwest = { version = "0.11.22", features = ["blocking"] }
-tokio = { version = "1", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-serde_yaml = "0.9.27"
+serde_yaml = "0.9.29"
 rustyline = "13.0.0"
 chrono = "0.4.31"
-log = "0.4.20"
