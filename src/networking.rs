@@ -1,5 +1,3 @@
-use reqwest;
-
 pub struct UrlRequest;
 
 pub struct UrlHandler {
@@ -7,32 +5,25 @@ pub struct UrlHandler {
 }
 
 impl UrlRequest {
-    pub fn request(url: &str) -> String {
-        match reqwest::blocking::get(url) {
-            Ok(response) => {
-                if response.status().is_success() {
-                    response.text().unwrap()
-                } else {
-                    format!("Error: {}", response.status())
-                }
-            }
-            Err(_) => String::from("Error while requesting url")
-        }
+    pub fn request(url: &str) -> Result<String, String> {
+        reqwest::blocking::get(url).map_or_else(
+            |e| Err(format!("Error sending request: {e}")),
+            |res| match res.status() {
+                ok if (200..300).contains(&ok.as_u16()) => Ok(res.text().unwrap_or_default()),
+                err_code => Err(format!("Non-OK Status Code: {err_code}")),
+            },
+        )
     }
 }
 
 impl UrlHandler {
-    pub fn request(&self) -> String {
-        match reqwest::blocking::get(&self.url) {
-            Ok(response) => {
-                if response.status().is_success() {
-                    response.text().unwrap()
-                }
-                else {
-                    format!("Error: {}", response.status())
-                }
-            }
-            Err(_) => String::from("Error while requesting url")
-        }
+    pub fn request(&self) -> Result<String, String> {
+        reqwest::blocking::get(&self.url).map_or_else(
+            |e| Err(format!("Error while requesting url: {e}")),
+            |res| match res.status() {
+                ok if (200..300).contains(&ok.as_u16()) => Ok(res.text().unwrap_or_default()),
+                err_code => Err(format!("Non-OK Status Code: {err_code}")),
+            },
+        )
     }
 }

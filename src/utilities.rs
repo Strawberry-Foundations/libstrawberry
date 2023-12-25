@@ -1,7 +1,7 @@
+use chrono::prelude::*;
 use std::any::type_name;
 use std::thread;
 use std::time::Duration;
-use chrono::prelude::*;
 
 pub fn sleep(time: u64) {
     thread::sleep(Duration::from_secs(time));

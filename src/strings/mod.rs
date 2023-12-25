@@ -1,5 +1,5 @@
-use std::fs;
 use serde_yaml::Value;
+use std::fs;
 
 pub struct Strings {
     pub language: String,
@@ -7,22 +7,17 @@ pub struct Strings {
 }
 
 pub fn load_language_file(path: &str) -> String {
-    let lang_yml =
-        fs::read_to_string(path)
-            .expect("Could not read language strings");
-    lang_yml
+    fs::read_to_string(path).expect("Could not read language strings")
 }
 
 impl Strings {
-    pub fn new(language: &str, lang_strings: &str) -> Strings {
-        let lang_object = serde_yaml::from_str(&lang_strings).unwrap();
+    pub fn new(language: &str, lang_strings: &str) -> Self {
+        let lang_object = serde_yaml::from_str(lang_strings).unwrap();
 
-        let str_loader = Strings {
+        Self {
             language: language.to_string(),
             lang_str_object: lang_object,
-        };
-
-        str_loader
+        }
     }
 
     pub fn str(&self, string: &str) -> String {
