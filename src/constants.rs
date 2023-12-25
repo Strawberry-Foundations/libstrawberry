@@ -1,0 +1,1 @@
+pub const KEEPALIVE_MESSAGE: &str = "[#<keepalive.event.sent>]";
