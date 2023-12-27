@@ -1,10 +1,11 @@
 [package]
 name = "stblib"
-version = "0.2.10"
+version = "0.2.10-1"
 edition = "2021"
 authors = ["Juliandev02", "Paddyk45", "matteodev8"]
 description = "stblib is a simple library used mostly by Strawberry Foundation's Projects"
 license = "AGPL-3.0-only"
+repository = "https://github.com/Strawberry-Foundations/stblib-rust"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
