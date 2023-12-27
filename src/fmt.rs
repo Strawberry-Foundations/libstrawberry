@@ -4,7 +4,7 @@ pub struct JSON;
 
 impl JSON {
     #![allow(dead_code)]
-    fn from_str(string: &str) -> Result<Value, serde_json::Error> {
+    pub fn from_str(string: &str) -> Result<Value, serde_json::Error> {
         serde_json::from_str(string)
     }
 }
