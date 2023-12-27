@@ -36,3 +36,7 @@ pub fn contains_whitespace(string: &str) -> bool {
     }
     false
 }
+
+pub fn is_empty_or_whitespace(string: &str) -> bool {
+    string.chars().all(|c| c.is_whitespace())
+}
