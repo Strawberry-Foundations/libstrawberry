@@ -10,6 +10,7 @@ pub const BLUE: &str = "\x1b[34m";
 pub const PURPLE: &str = "\x1b[35m";
 pub const CYAN: &str = "\x1b[36m";
 pub const WHITE: &str = "\x1b[37m";
+pub const GRAY: &str =  "\x1b[90m";
 
 pub const LIGHT_GREEN: &str = "\x1b[92m";
 pub const LIGHT_BLUE: &str = "\x1b[94m";
