@@ -1,3 +1,6 @@
 /target
 /tests
 .idea
+
+Cargo.lock
+tests
