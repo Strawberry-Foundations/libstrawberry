@@ -24,4 +24,8 @@ impl FeatureSet {
             Features::FileHandler => self.enable_file_handler = false,
         }
     }
+
+    pub fn target_return(&self) -> &FeatureSet {
+        self
+    }
 }
