@@ -21,7 +21,7 @@ pub fn strawberry_chat_fmt() -> LogFormat {
         warning: format!("{C_RESET}[%<time>%] {YELLOW}[%<levelname>%]{RESET} [%<message>%]"),
         critical: format!("{C_RESET}[%<time>%] {RED}[%<levelname>%]{RESET} [%<message>%]"),
         extensions: LogFormatExt {
-            time_fmt: "%H:%M".to_string(),
+            time_fmt: "%Y-%m-%d %H:%M".to_string(),
             levelname_lowercase: false
         },
     }
