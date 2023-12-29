@@ -29,13 +29,10 @@ impl Logger {
             LogLevel::CRITICAL => "CRITICAL"
         };
 
-        if self.formatting.extensions.levelname_lowercase {
-            level_str.to_lowercase()
+        match self.formatting.extensions.levelname_lowercase {
+            true => level_str.to_lowercase(),
+            false => String::from(level_str)
         }
-        else {
-            String::from(level_str)
-        }
-
     }
 
     fn parse(&self, level: LogLevel, content: &str) -> String {
