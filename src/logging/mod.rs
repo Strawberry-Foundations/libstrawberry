@@ -38,40 +38,40 @@ impl Logger {
         }
     }
 
-    fn parse(&self, level: &LogLevel, content: &str) -> String {
+    fn parse(&self, level: &LogLevel, content: impl ToString) -> String {
         match level {
             LogLevel::DEFAULT => {
                 self.formatting.default
                     .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                    .replace("[%<message>%]", content)
+                    .replace("[%<message>%]", &content.to_string())
                     .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
             },
 
             LogLevel::INFO => {
                 self.formatting.info
                     .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                    .replace("[%<message>%]", content)
+                    .replace("[%<message>%]", &content.to_string())
                     .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
             },
 
             LogLevel::ERROR => {
                 self.formatting.error
                     .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                    .replace("[%<message>%]", content)
+                    .replace("[%<message>%]", &content.to_string())
                     .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
             },
 
             LogLevel::WARNING => {
                 self.formatting.warning
                     .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                    .replace("[%<message>%]", content)
+                    .replace("[%<message>%]", &content.to_string())
                     .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
             },
 
             LogLevel::CRITICAL => {
                 self.formatting.critical
                     .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                    .replace("[%<message>%]", content)
+                    .replace("[%<message>%]", &content.to_string())
                     .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
             },
         }

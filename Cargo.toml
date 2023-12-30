@@ -10,7 +10,7 @@ repository = "https://github.com/Strawberry-Foundations/stblib-rust"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-reqwest = { version = "0.11.23", features = ["blocking"] }
+reqwest = { version = "0.11.23", features = ["blocking", "rustls"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 serde_yaml = "0.9.29"
