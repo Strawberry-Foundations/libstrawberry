@@ -1,4 +1,5 @@
-use chrono::prelude::*;
+/// TODO: Use built-in logging from stblib (stblib::logging)
+
 use serde_json::Value;
 use std::fmt::{Display, Formatter};
 use std::io::{Read, Write};
@@ -82,21 +83,24 @@ impl Bot {
         self.log_recv_msg = log_recv_msg;
     }
 
-    pub fn logger(&mut self, message: impl Display, log_type: LogLevel) {
+    pub fn logger(&mut self, message: impl Display, log_type: &LogLevel) {
         self.log_msg = format!(
             "{CYAN}{BOLD}{time}  {log_type}\tscapi --> {C_RESET}{message}",
             time = current_time("%Y-%m-%d %H:%M:%S")
         );
-        println!("{}", self.log_msg)
+        println!("{}", self.log_msg);
     }
 
-    pub fn log_fmt(&mut self, message: impl Display, log_type: LogLevel) -> String {
+    pub fn log_fmt(&mut self, message: impl Display, log_type: &LogLevel) -> String {
         format!(
             "{CYAN}{BOLD}{time}  {log_type}\tscapi --> {C_RESET}{message}",
             time = current_time("%Y-%m-%d %H:%M:%S")
         )
     }
 
+    /// # Panics
+    ///
+    /// - Will panic if stream is closed/not writeable
     pub fn login(&mut self) {
         self.stream
             .write_all(self.username.as_bytes())
@@ -135,14 +139,14 @@ impl Bot {
                             "{}",
                             self.log_fmt(
                                 format!("Error while reading from stream: {e}"),
-                                LogLevel::ERROR
+                                &LogLevel::ERROR
                             )
                             .as_str()
                         ),
                     };
 
                     if stream_reader == 0 {
-                        self.logger("Server connection closed", LogLevel::ERROR);
+                        self.logger("Server connection closed", &LogLevel::ERROR);
                         exit(1)
                     }
 
@@ -170,7 +174,7 @@ impl Bot {
                     Err(e) => {
                         self.logger(
                             format!("Error desering packet ({str_buffer}): {e}").as_str(),
-                            LogLevel::ERROR,
+                            &LogLevel::ERROR,
                         );
                         continue;
                     }
@@ -180,7 +184,7 @@ impl Bot {
                     match msg["message_type"].as_str() {
                         Some("system_message") => self.logger(
                             msg["message"]["content"].as_str().unwrap(),
-                            LogLevel::MESSAGE,
+                            &LogLevel::MESSAGE,
                         ),
                         Some("user_message") => self.logger(
                             format!(
@@ -193,7 +197,7 @@ impl Bot {
                                 msg["message"]["content"].as_str().unwrap()
                             )
                             .as_str(),
-                            LogLevel::MESSAGE,
+                            &LogLevel::MESSAGE,
                         ),
 
                         None => unreachable!(),
@@ -204,7 +208,7 @@ impl Bot {
                                 str_buffer
                             )
                             .as_str(),
-                            LogLevel::WARNING,
+                            &LogLevel::WARNING,
                         ),
                     }
                 }
@@ -215,7 +219,7 @@ impl Bot {
     pub fn run(&mut self) {
         self.logger(
             format!("{GREEN}Starting scapi {VERSION} (v{VERSION}{FULL_VERSION})").as_str(),
-            LogLevel::INFO,
+            &LogLevel::INFO,
         );
         if self.enable_user_input {
             self.logger(
@@ -223,14 +227,14 @@ impl Bot {
                     "{YELLOW}Flag {GREEN}{BOLD}'enabled_user_input'{C_RESET}{YELLOW} is enabled"
                 )
                 .as_str(),
-                LogLevel::INFO,
+                &LogLevel::INFO,
             );
         }
         if self.log_recv_msg {
             self.logger(
                 format!("{YELLOW}Flag {GREEN}{BOLD}'log_recv_msg'{C_RESET}{YELLOW} is enabled")
                     .as_str(),
-                LogLevel::INFO,
+                &LogLevel::INFO,
             );
         }
 
