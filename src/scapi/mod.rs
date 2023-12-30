@@ -8,8 +8,9 @@ use std::string::ToString;
 
 mod addons;
 
-use crate::colors::*;
+use crate::colors::{BLUE, BOLD, CYAN, C_RESET, GREEN, RED, YELLOW};
 use crate::utilities;
+use crate::utilities::current_time;
 
 const VERSION: &str = "1.0.0";
 const FULL_VERSION: &str = "_dev-vacakes-stblib::rs_stmbv2";
@@ -51,9 +52,10 @@ impl Display for LogLevel {
 }
 
 impl Bot {
+    #[must_use]
     pub fn new(username: &str, token: &str, address: &str, port: u16, json_fmt: bool) -> Self {
         pub fn connect(address: &str, port: u16) -> TcpStream {
-            let host = format!("{}:{}", address, port);
+            let host = format!("{address}:{port}");
 
             TcpStream::connect(host).expect("Error opening stream")
         }
@@ -75,11 +77,6 @@ impl Bot {
         }
     }
 
-    fn current_time(&self) -> String {
-        let local: DateTime<Local> = Local::now();
-        local.format("%Y-%m-%d %H:%M:%S").to_string()
-    }
-
     pub fn flag_handler(&mut self, enable_user_input: bool, log_recv_msg: bool) {
         self.enable_user_input = enable_user_input;
         self.log_recv_msg = log_recv_msg;
@@ -88,7 +85,7 @@ impl Bot {
     pub fn logger(&mut self, message: impl Display, log_type: LogLevel) {
         self.log_msg = format!(
             "{CYAN}{BOLD}{time}  {log_type}\tscapi --> {C_RESET}{message}",
-            time = self.current_time()
+            time = current_time("%Y-%m-%d %H:%M:%S")
         );
         println!("{}", self.log_msg)
     }
@@ -96,7 +93,7 @@ impl Bot {
     pub fn log_fmt(&mut self, message: impl Display, log_type: LogLevel) -> String {
         format!(
             "{CYAN}{BOLD}{time}  {log_type}\tscapi --> {C_RESET}{message}",
-            time = self.current_time()
+            time = current_time("%Y-%m-%d %H:%M:%S")
         )
     }
 
