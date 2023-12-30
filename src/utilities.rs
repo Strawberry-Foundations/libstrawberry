@@ -1,6 +1,6 @@
 use std::any::type_name;
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use chrono::prelude::*;
 use regex::Regex;
@@ -18,6 +18,15 @@ pub fn ms_sleep(time: u64) {
 pub fn current_time(format: &str) -> String {
     let local: DateTime<Local> = Local::now();
     local.format(format).to_string()
+}
+
+/// # Panics
+/// - Will panic when ..?
+
+#[must_use]
+pub fn unix_time() -> u64 {
+    let now = SystemTime::now();
+    now.duration_since(UNIX_EPOCH).expect("err!").as_secs()
 }
 
 #[must_use]
@@ -48,3 +57,4 @@ pub fn contains_whitespace(string: &str) -> bool {
 pub fn is_empty_or_whitespace(string: &str) -> bool {
     string.chars().all(char::is_whitespace)
 }
+
