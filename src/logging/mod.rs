@@ -2,6 +2,7 @@ pub mod featureset;
 pub mod formats;
 pub mod level;
 
+use std::fmt::Display;
 use crate::logging::formats::LogFormat;
 use crate::logging::featureset::FeatureSet;
 use crate::utilities::current_time;
@@ -76,32 +77,32 @@ impl Logger {
         }
     }
 
-    pub fn default(&self, log_message: &str) {
+    pub fn default(&self, log_message: impl Display) {
         println!("{}", self.parse(&LogLevel::DEFAULT, log_message));
     }
 
-    pub fn info(&self, log_message: &str) {
+    pub fn info(&self, log_message: impl Display) {
         println!("{}", self.parse(&LogLevel::INFO, log_message));
     }
 
-    pub fn error(&self, log_message: &str) {
+    pub fn error(&self, log_message: impl Display) {
         println!("{}", self.parse(&LogLevel::ERROR, log_message));
     }
 
-    pub fn warning(&self, log_message: &str) {
+    pub fn warning(&self, log_message: impl Display) {
         println!("{}", self.parse(&LogLevel::WARNING, log_message));
     }
 
-    pub fn critical(&self, log_message: &str) {
+    pub fn critical(&self, log_message: impl Display) {
         println!("{}", self.parse(&LogLevel::CRITICAL, log_message));
     }
 
-    pub fn panic(&self, log_message: &str) {
+    pub fn panic(&self, log_message: impl Display) {
         println!("{}", self.parse(&LogLevel::ERROR, log_message));
         std::process::exit(1);
     }
 
-    pub fn panic_critical(&self, log_message: &str) {
+    pub fn panic_critical(&self, log_message: impl Display) {
         println!("{}", self.parse(&LogLevel::CRITICAL, log_message));
         std::process::exit(1);
     }
