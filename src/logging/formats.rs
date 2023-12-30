@@ -1,4 +1,5 @@
 use crate::colors::{BLUE, C_RESET, RED, RESET, YELLOW};
+
 pub struct LogFormatExt {
     pub time_fmt: String,
     pub levelname_lowercase: bool,
@@ -13,6 +14,7 @@ pub struct LogFormat {
     pub extensions: LogFormatExt
 }
 
+#[must_use]
 pub fn strawberry_chat_fmt() -> LogFormat {
     LogFormat {
         info: format!("{C_RESET}[%<time>%] {BLUE}[%<levelname>%]{RESET}    [%<message>%]"),
