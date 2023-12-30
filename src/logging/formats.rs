@@ -1,4 +1,4 @@
-use crate::colors::{BLUE, C_RESET, RED, RESET, YELLOW};
+use crate::colors::{BLUE, BOLD, C_RESET, RED, YELLOW};
 
 pub struct LogFormatExt {
     pub time_fmt: String,
@@ -17,11 +17,11 @@ pub struct LogFormat {
 #[must_use]
 pub fn strawberry_chat_fmt() -> LogFormat {
     LogFormat {
-        info: format!("{C_RESET}[%<time>%] {BLUE}[%<levelname>%]{RESET}    [%<message>%]"),
-        error: format!("{C_RESET}[%<time>%] {RED}[%<levelname>%]{RESET}   [%<message>%]"),
-        default: format!("{C_RESET}[%<time>%] {BLUE}[%<levelname>%]{RESET}   [%<message>%]"),
-        warning: format!("{C_RESET}[%<time>%] {YELLOW}[%<levelname>%]{RESET} [%<message>%]"),
-        critical: format!("{C_RESET}[%<time>%] {RED}[%<levelname>%]{RESET} [%<message>%]"),
+        info: format!("{C_RESET}{BOLD}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}    [%<message>%]"),
+        error: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET}   [%<message>%]"),
+        default: format!("{C_RESET}{BOLD}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}   [%<message>%]"),
+        warning: format!("{C_RESET}{BOLD}[%<time>%] {YELLOW}[%<levelname>%]{C_RESET} [%<message>%]"),
+        critical: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET} [%<message>%]"),
         extensions: LogFormatExt {
             time_fmt: "%Y-%m-%d %H:%M".to_string(),
             levelname_lowercase: false
