@@ -10,3 +10,4 @@ pub mod scapi;
 pub mod colors;
 pub mod strings;
 pub mod logging;
+pub mod constants;
