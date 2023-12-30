@@ -7,7 +7,7 @@ pub struct UrlHandler {
 impl UrlRequest {
     /// # Errors
     ///
-    /// Will return `Err` if `url` is not reachable
+    /// - Will return `Err` if `url` is not reachable
 
     pub fn request(url: &str) -> Result<String, String> {
         reqwest::blocking::get(url).map_or_else(
@@ -23,7 +23,7 @@ impl UrlRequest {
 impl UrlHandler {
     /// # Errors
     ///
-    /// Will return `Err` if `url` is not reachable
+    /// - Will return `Err` if `url` is not reachable
 
     pub fn request(&self) -> Result<String, String> {
         reqwest::blocking::get(&self.url).map_or_else(
