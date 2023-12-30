@@ -13,14 +13,15 @@ pub struct Logger {
 }
 
 impl Logger {
-    pub fn new(feature_set: FeatureSet, formatter: LogFormat) -> Self {
-        Logger {
+    #[must_use]
+    pub const fn new(feature_set: FeatureSet, formatter: LogFormat) -> Self {
+        Self {
             feat_set: feature_set,
             formatting: formatter
         }
     }
 
-    fn loglevel_parser(&self, level: LogLevel) -> String {
+    fn loglevel_parser(&self, level: &LogLevel) -> String {
         let level_str = match level {
             LogLevel::DEFAULT => "DEFAULT",
             LogLevel::INFO => "INFO",
@@ -29,13 +30,14 @@ impl Logger {
             LogLevel::CRITICAL => "CRITICAL"
         };
 
-        match self.formatting.extensions.levelname_lowercase {
-            true => level_str.to_lowercase(),
-            false => String::from(level_str)
+        if self.formatting.extensions.levelname_lowercase {
+            level_str.to_lowercase()
+        } else {
+            String::from(level_str)
         }
     }
 
-    fn parse(&self, level: LogLevel, content: &str) -> String {
+    fn parse(&self, level: &LogLevel, content: &str) -> String {
         match level {
             LogLevel::DEFAULT => {
                 self.formatting.default
@@ -75,22 +77,22 @@ impl Logger {
     }
 
     pub fn default(&self, log_message: &str) {
-        println!("{}", self.parse(LogLevel::DEFAULT, log_message))
+        println!("{}", self.parse(&LogLevel::DEFAULT, log_message));
     }
 
     pub fn info(&self, log_message: &str) {
-        println!("{}", self.parse(LogLevel::INFO, log_message))
+        println!("{}", self.parse(&LogLevel::INFO, log_message));
     }
 
     pub fn error(&self, log_message: &str) {
-        println!("{}", self.parse(LogLevel::ERROR, log_message))
+        println!("{}", self.parse(&LogLevel::ERROR, log_message));
     }
 
     pub fn warning(&self, log_message: &str) {
-        println!("{}", self.parse(LogLevel::WARNING, log_message))
+        println!("{}", self.parse(&LogLevel::WARNING, log_message));
     }
 
     pub fn critical(&self, log_message: &str) {
-        println!("{}", self.parse(LogLevel::CRITICAL, log_message))
+        println!("{}", self.parse(&LogLevel::CRITICAL, log_message));
     }
 }
