@@ -95,4 +95,9 @@ impl Logger {
     pub fn critical(&self, log_message: &str) {
         println!("{}", self.parse(&LogLevel::CRITICAL, log_message));
     }
+
+    pub fn panic(&self, log_message: &str) {
+        println!("{}", self.parse(&LogLevel::ERROR, log_message));
+        std::process::exit(1);
+    }
 }
