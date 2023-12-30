@@ -1,4 +1,4 @@
-/// TODO: Use built-in logging from stblib (stblib::logging)
+/// TODO: Use built-in logging from stblib
 
 use serde_json::Value;
 use std::fmt::{Display, Formatter};
