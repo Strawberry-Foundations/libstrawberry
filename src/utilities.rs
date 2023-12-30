@@ -25,6 +25,9 @@ pub fn type_of<T>(_: T) -> &'static str {
     type_name::<T>()
 }
 
+/// # Panics
+/// - Will panic when regex object cannot be created
+
 #[must_use]
 pub fn escape_ansi(string: &str) -> String {
     let ansi_escape = Regex::new(r"(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]").unwrap();
