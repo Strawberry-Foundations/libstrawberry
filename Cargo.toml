@@ -1,7 +1,7 @@
 workspace = { members = ["tests"] }
 [package]
 name = "stblib"
-version = "0.3.4"
+version = "0.4.0"
 edition = "2021"
 authors = ["Juliandev02", "Paddyk45", "matteodev8"]
 description = "stblib is a simple library used mostly by Strawberry Foundation's Projects"
