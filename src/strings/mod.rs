@@ -1,9 +1,11 @@
 use serde_yaml::Value;
 use std::fs;
+use crate::colors::{BLUE, BOLD, C_RESET, CYAN, GREEN, MAGENTA, RED, RESET, UNDERLINE, WHITE, YELLOW};
 
 pub struct Strings {
     pub language: String,
     pub lang_str_object: Value,
+    pub replace_placeholders: bool,
 }
 
 /// # Panics
@@ -27,6 +29,22 @@ impl Strings {
         Self {
             language: language.to_string(),
             lang_str_object: lang_object,
+            replace_placeholders: false
+        }
+    }
+
+    /// # Panics
+    ///
+    /// - Will panic when serde couldnt convert to yaml from str
+
+    #[must_use]
+    pub fn new_with_placeholders(language: &str, lang_strings: &str) -> Self {
+        let lang_object = serde_yaml::from_str(lang_strings).unwrap();
+
+        Self {
+            language: language.to_string(),
+            lang_str_object: lang_object,
+            replace_placeholders: true
         }
     }
 
@@ -36,7 +54,55 @@ impl Strings {
 
     #[must_use]
     pub fn str(&self, string: &str) -> String {
-        let string = &self.lang_str_object[&self.language][string].as_str();
-        string.unwrap().to_string()
+        if !self.replace_placeholders {
+            let string = &self.lang_str_object[&self.language][string].as_str();
+            string.unwrap().to_string()
+        }
+        else {
+            let string = &self.lang_str_object[&self.language][string].as_str();
+
+            string.unwrap().to_string()
+                .replace("{red}", RED)
+                .replace("{green}", GREEN)
+                .replace("{yellow}", YELLOW)
+                .replace("{blue}", BLUE)
+                .replace("{magenta}", MAGENTA)
+                .replace("{cyan}", CYAN)
+                .replace("{white}", WHITE)
+                .replace("{reset}", RESET)
+                .replace("{creset}", C_RESET)
+                .replace("{bold}", BOLD)
+                .replace("{underline}", UNDERLINE)
+        }
+    }
+
+    /// # Panics
+    ///
+    /// - Will panic when string cannot be loaded from language file
+
+    #[must_use]
+    pub fn str_params(&self, string: &str, params: &[&dyn std::fmt::Display]) -> String {
+        let string = self.str(string);
+
+        let has_placeholders = string.contains('%');
+
+        if has_placeholders {
+            let mut formatted_message = string.to_string();
+
+            for param in params {
+                if let Some(index) = formatted_message.find("%s") {
+                    formatted_message.replace_range(index..(index + 2), &param.to_string());
+                }
+                else if let Some(index) = formatted_message.find("%d") {
+                    if let Ok(value) = param.to_string().parse::<i64>() {
+                        formatted_message.replace_range(index..(index + 2), &value.to_string());
+                    }
+                }
+            }
+            formatted_message.to_string()
+        } else {
+            string.to_string()
+        }
+
     }
 }
