@@ -12,4 +12,4 @@ pub mod strings;
 pub mod logging;
 pub mod constants;
 pub mod stbc;
-mod notifications;
+pub mod notifications;
