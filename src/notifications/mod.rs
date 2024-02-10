@@ -82,7 +82,7 @@ impl Notifier {
     }
 
     fn selected_notification_system<T: NotifierBackend>(os_override: &OS) -> NotifierBuilder<Box<dyn NotifierBackend>> {
-        NotifierBuilder::from(LinuxNotifier::new())
+         NotifierBuilder::from(LinuxNotifier::new())
 
     }
 
