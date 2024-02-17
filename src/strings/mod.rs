@@ -20,7 +20,7 @@ pub fn load_language_file(path: &str) -> String {
 impl Strings {
     /// # Panics
     ///
-    /// - Will panic when serde couldnt convert to yaml from str
+    /// - Will panic when serde couldn't convert to yaml from str
 
     #[must_use]
     pub fn new(language: &str, lang_strings: &str) -> Self {
@@ -87,7 +87,7 @@ impl Strings {
         let has_placeholders = string.contains('%');
 
         if has_placeholders {
-            let mut formatted_message = string.to_string();
+            let mut formatted_message = string;
 
             for param in params {
                 if let Some(index) = formatted_message.find("%s") {
@@ -101,8 +101,15 @@ impl Strings {
             }
             formatted_message.to_string()
         } else {
-            string.to_string()
+            string
         }
 
     }
+}
+
+#[macro_export]
+macro_rules! str {
+    ($($arg:tt)*) => {
+
+    };
 }
