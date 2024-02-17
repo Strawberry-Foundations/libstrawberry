@@ -35,7 +35,7 @@ impl Strings {
 
     /// # Panics
     ///
-    /// - Will panic when serde couldnt convert to yaml from str
+    /// - Will panic when serde couldn't convert to yaml from str
 
     #[must_use]
     pub fn new_with_placeholders(language: &str, lang_strings: &str) -> Self {
