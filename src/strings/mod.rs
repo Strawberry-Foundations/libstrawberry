@@ -82,7 +82,7 @@ impl Strings {
     /// - Will panic when string cannot be loaded from language file
 
     #[must_use]
-    pub fn load_params(&self, string: &str, params: &[&dyn std::fmt::Display]) -> String {
+    pub fn load_with_params(&self, string: &str, params: &[&dyn std::fmt::Display]) -> String {
         let string = self.load(string);
 
         let has_placeholders = string.contains('%');
