@@ -1,38 +1,52 @@
+#![cfg(feature = "stbchat")]
 /// TODO: Use built-in logging from stblib
 
+use tokio::net::TcpStream;
+use tokio::io::{ReadHalf, split, WriteHalf};
+
 use serde_json::Value;
-use std::fmt::{Display, Formatter};
-use std::io::{Read, Write};
-use std::net::TcpStream;
+use std::fmt::{Debug, Display, Formatter};
 use std::process::exit;
 use std::string::ToString;
+use std::time::Duration;
 
-mod addons;
+
+pub mod addons;
+pub mod command;
+pub mod flags;
+pub mod permissions;
+pub mod context;
 
 use crate::colors::{BLUE, BOLD, CYAN, C_RESET, GREEN, RED, YELLOW};
+use crate::scapi::command::Command;
+use crate::scapi::context::{Channel, Context};
+use crate::scapi::flags::BotFlags;
+use crate::scapi::permissions::PermissionList;
+use crate::stbm::stbchat::net::{IncomingPacketStream, OutgoingPacketStream};
+use crate::stbm::stbchat::packet::{ClientPacket, ServerPacket};
 use crate::utilities;
 use crate::utilities::current_time;
 
 const VERSION: &str = "1.0.0";
-const FULL_VERSION: &str = "_dev-vacakes-stblib::rs_stmbv2";
+const FULL_VERSION: &str = "_dev-vacakes-stblib::rs_stbmv3";
+const AUTHORS: [&str; 1] = ["Juliandev02"];
+const CODENAME: &str = "Vanilla Cake";
+const API: &str = "https://api.strawberryfoundations.xyz/v1/";
 
 pub struct Bot {
     pub username: String,
     pub token: String,
     pub address: String,
     pub port: u16,
-    pub stream: TcpStream,
-    pub send_stream: TcpStream,
-    pub enable_user_input: bool,
-    pub log_recv_msg: bool,
+    pub prefix: String,
+    pub flags: BotFlags,
+    pub permissions: PermissionList,
     pub log_msg: String,
-    pub json_fmt: bool,
+    pub cmds: Vec<Command>,
+    pub w_server: OutgoingPacketStream<WriteHalf<TcpStream>>,
+    pub r_server: IncomingPacketStream<ReadHalf<TcpStream>>,
 }
 
-pub struct Command<'a> {
-    pub name: &'a str,
-    pub handler: fn(Vec<String>) -> Vec<String>,
-}
 
 pub enum LogLevel {
     MESSAGE,
@@ -54,33 +68,48 @@ impl Display for LogLevel {
 
 impl Bot {
     #[must_use]
-    pub fn new(username: &str, token: &str, address: &str, port: u16, json_fmt: bool) -> Self {
-        pub fn connect(address: &str, port: u16) -> TcpStream {
-            let host = format!("{address}:{port}");
+    pub async fn new(username: &str, token: &str, address: &str, port: u16) -> Self {
+        let stream = TcpStream::connect((address, port)).await.unwrap();
 
-            TcpStream::connect(host).expect("Error opening stream")
-        }
+        let sock_ref = socket2::SockRef::from(&stream);
+
+        let mut ka = socket2::TcpKeepalive::new();
+        ka = ka.with_time(Duration::from_secs(20));
+        ka = ka.with_interval(Duration::from_secs(20));
+
+        sock_ref.set_tcp_keepalive(&ka).unwrap();
+
+        let (r_server, w_server) = split(stream);
+
+        let r_server = IncomingPacketStream::wrap(r_server);
+        let w_server = OutgoingPacketStream::wrap(w_server);
 
         Self {
             username: username.to_string(),
             token: token.to_string(),
             address: address.to_string(),
             port,
-            stream: connect(address, port),
-            send_stream: connect(address, port),
-            enable_user_input: false,
-            log_recv_msg: false,
+            prefix: "!".to_string(),
+            flags: BotFlags { enable_user_input: false, log_recv_msg: false },
+            permissions: PermissionList {
+                trusted: vec![],
+                admin: vec![],
+                custom: vec![],
+                owner: "".to_string(),
+            },
             log_msg: format!(
                 "{}{}{}  {}scapi  -->  {}{}",
                 CYAN, BOLD, "", "", C_RESET, ""
             ),
-            json_fmt,
+            cmds: vec![],
+            w_server,
+            r_server
         }
     }
 
     pub fn flag_handler(&mut self, enable_user_input: bool, log_recv_msg: bool) {
-        self.enable_user_input = enable_user_input;
-        self.log_recv_msg = log_recv_msg;
+        self.flags.enable_user_input = enable_user_input;
+        self.flags.log_recv_msg = log_recv_msg;
     }
 
     pub fn logger(&mut self, message: impl Display, log_type: &LogLevel) {
@@ -101,14 +130,11 @@ impl Bot {
     /// # Panics
     ///
     /// - Will panic if stream is closed/not writeable
-    pub fn login(&mut self) {
-        self.stream
-            .write_all(self.username.as_bytes())
-            .expect("Error writing stream");
-        utilities::ms_sleep(250);
-        self.stream
-            .write_all(self.token.as_bytes())
-            .expect("Error writing stream");
+    pub async fn login(&mut self) -> eyre::Result<()> {
+        self.w_server.write(ServerPacket::Login {
+            username: self.username.clone(),
+            password: self.token.clone()
+        }).await
     }
 
     /* fn send(&mut self) {
@@ -123,105 +149,82 @@ impl Bot {
         }
     } */
 
-    fn recv(&mut self) {
-        if self.json_fmt {
-            let mut count: i8 = 0;
+    pub fn register_command(&mut self, command: Command) {
+        self.cmds.push(command);
+    }
 
-            loop {
-                let mut buffer = [0u8; 1];
-                let mut str_buffer = String::new();
-                let mut wraps = 0;
+    pub async fn run_command(self, name: String, args: Vec<String>) {
+        let res = self.exec_command(name, args).await;
+        match res {
+            Ok(Some(text)) => {
 
-                loop {
-                    let stream_reader = match self.stream.read(&mut buffer) {
-                        Ok(r) => r,
-                        Err(e) => panic!(
-                            "{}",
-                            self.log_fmt(
-                                format!("Error while reading from stream: {e}"),
-                                &LogLevel::ERROR
-                            )
-                            .as_str()
-                        ),
-                    };
+            }
+            Ok(None) => {},
+            Err(e) => {}
+        };
+    }
 
-                    if stream_reader == 0 {
-                        self.logger("Server connection closed", &LogLevel::ERROR);
-                        exit(1)
+    async fn exec_command(self, name: String, args: Vec<String>) -> Result<Option<String>, String> {
+        let Some(cmd) = self.cmds.into_iter().find(|cmd| cmd.name == name || cmd.aliases.contains(&name.as_str())) else {
+            return Err(format!("Command '{name}' not found"))
+        };
+
+        (cmd.handler)(
+            Context {
+                executor: "".to_string(),
+                args,
+                channel: Channel {
+                    w_server: self.w_server
+                },
+            }
+        ).await
+    }
+
+    async fn recv(&mut self) {
+        loop {
+            match self.r_server.read::<ClientPacket>().await {
+                Ok(ClientPacket::SystemMessage { message}) => {
+                    self.logger(message.content, &LogLevel::INFO)
+                },
+
+                Ok(ClientPacket::UserMessage { author, message }) => {
+                    let fmt = format!("{}{} (@{}){}{C_RESET} {}", author.username,
+                        author.nickname,
+                        author.role_color,
+                        addons::badge_handler(author.badge.as_str()).unwrap(),
+                        message.content);
+
+                    self.logger(fmt, &LogLevel::MESSAGE);
+
+                    if message.content.starts_with("/") && message.content.len() > 1 {
+                        let parts: Vec<String> = message.content[1..]
+                            .split_ascii_whitespace()
+                            .map(String::from)
+                            .collect();
+
+                        &self.run_command(parts[0].to_string(), parts[1..].to_vec()).await
                     }
+                },
 
-                    match buffer[0] as char {
-                        '{' => {
-                            wraps += 1;
-                            str_buffer.push('{');
-                        }
-                        '}' => {
-                            wraps -= 1;
-                            str_buffer.push('}');
-                        }
-                        c => str_buffer.push(c),
-                    }
-
-                    if wraps == 0 {
-                        break;
-                    }
-                }
-
-                count += 1;
-
-                let msg: Value = match serde_json::from_str(&str_buffer) {
-                    Ok(ok) => ok,
-                    Err(e) => {
-                        self.logger(
-                            format!("Error desering packet ({str_buffer}): {e}").as_str(),
-                            &LogLevel::ERROR,
-                        );
-                        continue;
-                    }
-                };
-
-                if count > 8 {
-                    match msg["message_type"].as_str() {
-                        Some("system_message") => self.logger(
-                            msg["message"]["content"].as_str().unwrap(),
-                            &LogLevel::MESSAGE,
-                        ),
-                        Some("user_message") => self.logger(
-                            format!(
-                                "{}{} (@{}){}{C_RESET} {}",
-                                msg["role_color"].as_str().unwrap(),
-                                msg["nickname"].as_str().unwrap(),
-                                msg["username"].as_str().unwrap().to_lowercase(),
-                                addons::badge_handler(msg["badge"].as_str().unwrap())
-                                    .unwrap_or_default(),
-                                msg["message"]["content"].as_str().unwrap()
-                            )
-                            .as_str(),
-                            &LogLevel::MESSAGE,
-                        ),
-
-                        None => unreachable!(),
-                        m => self.logger(
-                            format!(
-                                "{YELLOW}Unimplemented packet {} - full packet: {}",
-                                m.unwrap(),
-                                str_buffer
-                            )
-                            .as_str(),
-                            &LogLevel::WARNING,
-                        ),
+                Ok(ClientPacket::Event { event_type}) => {
+                    if event_type == "event.login" {
+                        continue
                     }
                 }
+                Err(_) => break,
+                _ => println!(
+                    "{RED}{BOLD}[UImp] {YELLOW}{BOLD}Unimplemented package received"
+                )
             }
         }
     }
 
-    pub fn run(&mut self) {
+    pub async fn run(&mut self) {
         self.logger(
             format!("{GREEN}Starting scapi {VERSION} (v{VERSION}{FULL_VERSION})").as_str(),
             &LogLevel::INFO,
         );
-        if self.enable_user_input {
+        if self.flags.enable_user_input {
             self.logger(
                 format!(
                     "{YELLOW}Flag {GREEN}{BOLD}'enabled_user_input'{C_RESET}{YELLOW} is enabled"
@@ -230,7 +233,7 @@ impl Bot {
                 &LogLevel::INFO,
             );
         }
-        if self.log_recv_msg {
+        if self.flags.log_recv_msg {
             self.logger(
                 format!("{YELLOW}Flag {GREEN}{BOLD}'log_recv_msg'{C_RESET}{YELLOW} is enabled")
                     .as_str(),
@@ -238,6 +241,6 @@ impl Bot {
             );
         }
 
-        self.recv();
+        self.recv().await;
     }
 }
