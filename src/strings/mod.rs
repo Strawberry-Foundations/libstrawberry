@@ -53,12 +53,10 @@ impl Strings {
     /// - Will panic when string cannot be loaded from language file
 
     #[must_use]
-    pub fn str(&self, string: &str) -> String {
-        if !self.replace_placeholders {
-            let string = &self.lang_str_object[&self.language][string].as_str();
-            string.unwrap().to_string()
-        }
-        else {
+    pub fn load(&self, string: &str) -> String {
+        let string = &self.lang_str_object[&self.language][string].as_str().unwrap();
+
+        if self.replace_placeholders {
             let string = &self.lang_str_object[&self.language][string].as_str();
 
             string.unwrap().to_string()
@@ -74,6 +72,9 @@ impl Strings {
                 .replace("{bold}", BOLD)
                 .replace("{underline}", UNDERLINE)
         }
+        else {
+            (*string).to_string()
+        }
     }
 
     /// # Panics
@@ -81,8 +82,8 @@ impl Strings {
     /// - Will panic when string cannot be loaded from language file
 
     #[must_use]
-    pub fn str_params(&self, string: &str, params: &[&dyn std::fmt::Display]) -> String {
-        let string = self.str(string);
+    pub fn load_params(&self, string: &str, params: &[&dyn std::fmt::Display]) -> String {
+        let string = self.load(string);
 
         let has_placeholders = string.contains('%');
 
@@ -109,7 +110,7 @@ impl Strings {
 
 #[macro_export]
 macro_rules! str {
-    ($($arg:tt)*) => {
-
+    ($loader:expr, $string:expr) => {
+        println!("{}", $loader.load($string))
     };
 }
