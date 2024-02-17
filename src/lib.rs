@@ -11,6 +11,6 @@ pub mod colors;
 pub mod strings;
 pub mod logging;
 pub mod constants;
-pub mod stbc;
+pub mod stbm;
 pub mod email;
 // pub mod notifications;
