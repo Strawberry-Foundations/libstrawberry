@@ -1,8 +1,7 @@
 #![allow(clippy::future_not_send, clippy::needless_pass_by_value)]
 
-
 use serde::{Deserialize, Serialize};
-use crate::stbm::stbchat::object::User;
+use crate::stbm::stbchat::object::{User, UserMeta, Message};
 
 /// # A packet sent from the server to the client (Server -> Client)
 /// - `SystemMessage`: A message sent from the system
@@ -52,20 +51,4 @@ pub enum ServersidePacket {
     Message {
         message: Message
     }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Message {
-    pub content: String,
-}
-
-impl Message {
-    pub fn new(msg: impl ToString) -> Self {
-        Self { content: msg.to_string() }
-    }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct UserMeta {
-    pub username: String,
 }
