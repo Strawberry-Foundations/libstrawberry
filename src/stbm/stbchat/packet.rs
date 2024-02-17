@@ -1,4 +1,4 @@
-#![allow(clippy::future_not_send)]
+#![allow(clippy::future_not_send, clippy::needless_pass_by_value)]
 
 
 use serde::{Deserialize, Serialize};
