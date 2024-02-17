@@ -10,7 +10,7 @@ use crate::stbm::stbchat::object::{User, UserMeta, Message};
 /// - `Backend`: Sends the username to the client
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "packet_type")]
-pub enum ClientsidePacket {
+pub enum ClientPacket {
     #[serde(rename = "system_message")]
     SystemMessage {
         message: Message
@@ -43,7 +43,7 @@ pub enum ClientsidePacket {
 /// - `Message`: A message sent from client
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "packet_type")]
-pub enum ServersidePacket {
+pub enum ServerPacket {
     Login {
         username: String,
         password: String
