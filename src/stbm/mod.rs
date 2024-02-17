@@ -1,3 +1,5 @@
+#![cfg(feature = "stbchat")]
+
 pub mod tcp {
     pub mod keep_alive;
 }
