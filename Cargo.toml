@@ -10,6 +10,7 @@ repository = "https://github.com/Strawberry-Foundations/stblib-rust"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+tokio = "1.36.0"
 reqwest = { version = "0.11.24", features = ["blocking"] }
 serde = { version = "1.0.196", features = ["derive"] }
 serde_json = "1.0.113"
@@ -21,4 +22,4 @@ regex = "1.10.3"
 lettre = "0.11.4"
 thiserror = "1.0.57"
 eyre = "0.6.12"
-tokio = "1.36.0"
+num-traits = "0.2.18"
