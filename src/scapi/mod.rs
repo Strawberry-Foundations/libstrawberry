@@ -1,12 +1,12 @@
 #![cfg(feature = "stbchat")]
+#![allow(clippy::future_not_send)]
 /// TODO: Use built-in logging from stblib
+
 
 use tokio::net::TcpStream;
 use tokio::io::{ReadHalf, split, WriteHalf};
 
-use serde_json::Value;
-use std::fmt::{Debug, Display, Formatter};
-use std::process::exit;
+use std::fmt::{Display, Formatter};
 use std::string::ToString;
 use std::time::Duration;
 
@@ -24,7 +24,6 @@ use crate::scapi::flags::BotFlags;
 use crate::scapi::permissions::PermissionList;
 use crate::stbm::stbchat::net::{IncomingPacketStream, OutgoingPacketStream};
 use crate::stbm::stbchat::packet::{ClientPacket, ServerPacket};
-use crate::utilities;
 use crate::utilities::current_time;
 
 const VERSION: &str = "1.0.0";
@@ -68,6 +67,8 @@ impl Display for LogLevel {
 
 impl Bot {
     #[must_use]
+    /// # Panics
+    /// 
     pub async fn new(username: &str, token: &str, address: &str, port: u16) -> Self {
         let stream = TcpStream::connect((address, port)).await.unwrap();
 
@@ -95,7 +96,7 @@ impl Bot {
                 trusted: vec![],
                 admin: vec![],
                 custom: vec![],
-                owner: "".to_string(),
+                owner: String::new(),
             },
             log_msg: format!(
                 "{}{}{}  {}scapi  -->  {}{}",
@@ -130,6 +131,8 @@ impl Bot {
     /// # Panics
     ///
     /// - Will panic if stream is closed/not writeable
+    /// 
+    /// # Errors
     pub async fn login(&mut self) -> eyre::Result<()> {
         self.w_server.write(ServerPacket::Login {
             username: self.username.clone(),
@@ -156,11 +159,11 @@ impl Bot {
     pub async fn run_command(self, name: String, args: Vec<String>) {
         let res = self.exec_command(name, args).await;
         match res {
-            Ok(Some(text)) => {
+            Ok(Some(_text)) => {
 
             }
             Ok(None) => {},
-            Err(e) => {}
+            Err(_e) => {}
         };
     }
 
@@ -171,7 +174,7 @@ impl Bot {
 
         (cmd.handler)(
             Context {
-                executor: "".to_string(),
+                executor: String::new(),
                 args,
                 channel: Channel {
                     w_server: self.w_server
@@ -184,7 +187,7 @@ impl Bot {
         loop {
             match self.r_server.read::<ClientPacket>().await {
                 Ok(ClientPacket::SystemMessage { message}) => {
-                    self.logger(message.content, &LogLevel::INFO)
+                    self.logger(message, &LogLevel::INFO);
                 },
 
                 Ok(ClientPacket::UserMessage { author, message }) => {
@@ -192,17 +195,17 @@ impl Bot {
                         author.nickname,
                         author.role_color,
                         addons::badge_handler(author.badge.as_str()).unwrap(),
-                        message.content);
+                        message);
 
                     self.logger(fmt, &LogLevel::MESSAGE);
 
-                    if message.content.starts_with("/") && message.content.len() > 1 {
-                        let parts: Vec<String> = message.content[1..]
+                    if message.starts_with('/') && message.len() > 1 {
+                        let _parts: Vec<String> = message[1..]
                             .split_ascii_whitespace()
                             .map(String::from)
                             .collect();
 
-                        &self.run_command(parts[0].to_string(), parts[1..].to_vec()).await
+                        // &self.run_command(parts[0].to_string(), parts[1..].to_vec()).await
                     }
                 },
 
