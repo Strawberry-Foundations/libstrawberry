@@ -1,7 +1,7 @@
 #![allow(clippy::future_not_send, clippy::needless_pass_by_value)]
 
 use serde::{Deserialize, Serialize};
-use crate::stbm::stbchat::object::{User, UserMeta, Message};
+use crate::stbm::stbchat::object::{User, UserMeta};
 
 /// # A packet sent from the server to the client (Server -> Client)
 /// - `SystemMessage`: A message sent from the system
@@ -13,12 +13,12 @@ use crate::stbm::stbchat::object::{User, UserMeta, Message};
 pub enum ClientPacket {
     #[serde(rename = "system_message")]
     SystemMessage {
-        message: Message
+        message: String
     },
     #[serde(rename = "user_message")]
     UserMessage {
         author: User,
-        message: Message,
+        message: String,
     },
     #[serde(rename = "notification_backend")]
     Notification {
@@ -49,6 +49,6 @@ pub enum ServerPacket {
         password: String
     },
     Message {
-        message: Message
+        message: String
     }
 }
