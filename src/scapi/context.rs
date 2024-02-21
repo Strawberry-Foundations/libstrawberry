@@ -1,7 +1,6 @@
 use tokio::io::WriteHalf;
 use tokio::net::TcpStream;
 use crate::stbm::stbchat::net::OutgoingPacketStream;
-use crate::stbm::stbchat::object::Message;
 use crate::stbm::stbchat::packet::ServerPacket;
 
 pub struct Context {
@@ -20,10 +19,12 @@ pub struct Channel {
 }
 
 impl Channel {
+    /// # Panics
+    /// 
     pub async fn send(&mut self, message: impl ToString) {
         self.w_server.write(
             ServerPacket::Message {
-                message: Message::new(message)
+                message: message.to_string()
             }).await.expect("Err");
     }
 }
