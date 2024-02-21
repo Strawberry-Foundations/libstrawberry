@@ -13,15 +13,3 @@ pub struct User {
 pub struct UserMeta {
     pub username: String,
 }
-
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Message {
-    pub content: String,
-}
-
-impl Message {
-    pub fn new(msg: impl ToString) -> Self {
-        Self { content: msg.to_string() }
-    }
-}
