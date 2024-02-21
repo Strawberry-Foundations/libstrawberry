@@ -1,6 +1,6 @@
 [package]
 name = "stblib"
-version = "0.5.2"
+version = "0.5.3"
 edition = "2021"
 authors = ["Juliandev02 <julian@strawberryfoundations.xyz>", "Paddyk45", "matteodev8"]
 description = "stblib is a simple library used mostly by Strawberry Foundation's Projects"
@@ -11,7 +11,7 @@ repository = "https://github.com/Strawberry-Foundations/stblib-rust"
 
 [dependencies]
 reqwest = { version = "0.11.24", features = ["blocking"] }
-serde = { version = "1.0.196", features = ["derive"] }
+serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.113"
 serde_yaml = "0.9.31"
 rustyline = "13.0.0"
