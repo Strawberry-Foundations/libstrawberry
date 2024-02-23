@@ -8,7 +8,7 @@ use crate::stbm::stbchat::object::{User, UserMeta};
 /// - `UserMessage`: A message sent from a user
 /// - `Notification`: Tells the client to show a notification
 /// - `Backend`: Sends the username to the client
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "packet_type")]
 pub enum ClientPacket {
     #[serde(rename = "system_message")]
