@@ -86,7 +86,7 @@ impl<W: Write + Unpin> OutgoingPacketStream<W> {
 
         let mut packet = vec![];
 
-        packet.extend_from_slice(&len.to_le_bytes());
+        packet.extend_from_slice(&len.to_be_bytes());
         packet.extend(bytes);
 
         self.stream.write_all(&packet)?;
@@ -142,11 +142,13 @@ impl<R: Read + Unpin> IncomingPacketStream<R> {
 
     /// # Errors
     /// - Will error ...
-    pub async fn read<P: DeserializeOwned>(&mut self) -> eyre::Result<P> {
+    pub fn read<P: DeserializeOwned>(&mut self) -> eyre::Result<P> {
         let mut len_buf = [0u8; 2];
         self.stream.read_exact(&mut len_buf)?;
-        let len = u16::from_le_bytes(len_buf);
+        
+        let len = u16::from_be_bytes(len_buf);
         let mut buffer = vec![0; len as usize];
+        
         self.stream.read_exact(&mut buffer)?;
         Ok(rmp_serde::from_read(buffer.as_slice())?)
     }
