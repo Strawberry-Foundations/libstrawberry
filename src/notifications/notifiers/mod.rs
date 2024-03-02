@@ -1,18 +1,9 @@
+use crate::notifications::Notifier;
+
 pub mod linux;
+pub mod windows;
 
-pub trait NotifierBackend {
-    fn new(&self,) -> Self ;
-    fn notification_send(&self);
-}
-
-pub struct NotifierBuilder<T> {
-    pub backend: T
-}
-
-impl<T: NotifierBackend> NotifierBuilder<T> {
-    pub fn from(backend: T) -> NotifierBuilder<T> {
-        NotifierBuilder {
-            backend
-        }
-    }
+pub trait BaseNotifier {
+    fn new(notifier: Notifier) -> Self;
+    fn notification_send(&self) -> bool;
 }
