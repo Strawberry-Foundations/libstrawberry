@@ -1,18 +1,18 @@
-mod os;
-mod notifiers;
+pub mod os;
+pub mod notifiers;
 
-use crate::notifications::notifiers::linux::LinuxNotifier;
-use crate::notifications::notifiers::{NotifierBackend, NotifierBuilder};
+use crate::notifications::notifiers::linux::{LinuxDBusNotifier, LinuxLibNotifyNotifier};
+use crate::notifications::notifiers::BaseNotifier;
+use crate::notifications::notifiers::windows::{WindowsLegacyNotifier, WindowsNotifier};
 use crate::notifications::os::OS;
-use crate::notifications::os::OS::Linux;
 
 pub struct Notifier {
-    pub default_notification_title: String,
-    pub default_notification_message: String,
-    pub default_notification_application_name: String,
-    pub default_notification_urgency: String,
-    pub default_notification_icon: Option<String>,
-    pub default_notification_audio: Option<String>,
+    pub title: String,
+    pub message: String,
+    pub application_name: String,
+    pub urgency: String,
+    pub icon: String,
+    pub audio: Option<String>,
     pub enable_logging: bool,
     pub internal_notifier: InternalNotifierObject,
 }
@@ -31,7 +31,7 @@ impl Default for Notifier {
             "Default Message".to_string(),
             "Rust Application".to_string(),
             "normal".to_string(),
-            None,
+            "",
             None,
             false
         )
@@ -40,22 +40,22 @@ impl Default for Notifier {
 
 impl Notifier {
     #[must_use]
-    pub const fn new(
-        default_notification_title: String,
-        default_notification_message: String,
-        default_notification_application_name: String,
-        default_notification_urgency: String,
-        default_notification_icon: Option<String>,
+    pub fn new(
+        default_notification_title: impl ToString,
+        default_notification_message: impl ToString,
+        default_notification_application_name: impl ToString,
+        default_notification_urgency: impl ToString,
+        default_notification_icon: impl ToString,
         default_notification_audio: Option<String>,
         enable_logging: bool,
     ) -> Self {
         Self {
-            default_notification_title,
-            default_notification_message,
-            default_notification_application_name,
-            default_notification_urgency,
-            default_notification_icon,
-            default_notification_audio,
+            title: default_notification_title.to_string(),
+            message: default_notification_message.to_string(),
+            application_name: default_notification_application_name.to_string(),
+            urgency: default_notification_urgency.to_string(),
+            icon: default_notification_icon.to_string(),
+            audio: default_notification_audio,
             enable_logging,
             internal_notifier: InternalNotifierObject {
                 system: &OS::Undefined,
@@ -65,25 +65,30 @@ impl Notifier {
         }
     }
 
-    pub fn build(&mut self) {
-        self.internal_notifier.system = if self.internal_notifier.system == &OS::Undefined {
-            match std::env::consts::OS {
+    pub fn build(mut self) -> Self {
+        if self.internal_notifier.system == &OS::Undefined {
+            self.internal_notifier.system = match std::env::consts::OS {
                 "linux" => &OS::Linux,
                 "windows" => &OS::Windows,
                 "macos" => &OS::MacOS,
                 _ => &OS::Unknown
             }
         }
-        else {
-            &self.internal_notifier.system
-        };
 
-        Self::selected_notification_system(&self.internal_notifier.system);
+        self
     }
 
-    fn selected_notification_system<T: NotifierBackend>(os_override: &OS) -> NotifierBuilder<Box<dyn NotifierBackend>> {
-         NotifierBuilder::from(LinuxNotifier::new())
-
+    pub fn send(self,) -> bool {
+        match self.internal_notifier.system {
+            OS::Linux => LinuxDBusNotifier::new(self).notification_send(),
+            OS::LinuxLibNotify => LinuxLibNotifyNotifier::new(self).notification_send(),
+            OS::Windows => WindowsNotifier::new(self).notification_send(),
+            OS::WindowsLegacy => WindowsLegacyNotifier::new(self).notification_send(),
+            _ => {
+                eprintln!("Unsupported operating system");
+                std::process::exit(1);
+            }
+        }
     }
 
     #[must_use]
