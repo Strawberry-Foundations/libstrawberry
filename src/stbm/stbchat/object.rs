@@ -17,11 +17,19 @@ pub struct UserMeta {
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "api_response")]
 pub enum StbchatApiResponse {
-    #[serde(rename = "new_user")]
-    NewUser {
+    #[serde(rename = "user_joined")]
+    UserJoined {
         username: String,
         nickname: String,
         role_color: String,
         badge: String,
-    }
+    },
+    #[serde(rename = "user_left")]
+    UserLeft {
+        username: String,
+    },
+    #[serde(rename = "user_data")]
+    UserData {
+        data: User,
+    },
 }
