@@ -18,6 +18,8 @@ rustyline = "13.0.0"
 chrono = "0.4.34"
 regex = "1.10.3"
 lettre = "0.11.4"
+shellwords = "1.1.0"
+dbus = "0.6.5"
 
 rmp-serde = { version = "1.1.2", optional = true}
 tokio = { version = "1.36.0", optional = true, features = ["rt", "rt-multi-thread", "macros"] }
