@@ -13,3 +13,15 @@ pub struct User {
 pub struct UserMeta {
     pub username: String,
 }
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(tag = "api_response")]
+pub enum StbchatApiResponse {
+    #[serde(rename = "new_user")]
+    NewUser {
+        username: String,
+        nickname: String,
+        role_color: String,
+        badge: String,
+    }
+}
