@@ -50,5 +50,8 @@ pub enum ServerPacket {
     },
     Message {
         message: String
+    },
+    ApiRequest {
+        request_type: String
     }
 }
