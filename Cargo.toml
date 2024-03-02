@@ -1,0 +1,36 @@
+[package]
+name = "stblib"
+version = "0.5.8"
+edition = "2021"
+authors = ["Juliandev02 <julian@strawberryfoundations.xyz>", "Paddyk45", "matteodev8"]
+description = "stblib is a simple library used mostly by Strawberry Foundation's Projects"
+license = "AGPL-3.0-only"
+repository = "https://github.com/Strawberry-Foundations/stblib-rust"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+reqwest = { version = "0.11.24", features = ["blocking"] }
+serde = { version = "1.0.197", features = ["derive"] }
+serde_json = "1.0.114"
+serde_yaml = "0.9.32"
+rustyline = "13.0.0"
+chrono = "0.4.34"
+regex = "1.10.3"
+lettre = "0.11.4"
+shellwords = "1.1.0"
+
+[target.'cfg(unix)'.dependencies]
+dbus = "0.6.5"
+
+rmp-serde = { version = "1.1.2", optional = true}
+tokio = { version = "1.36.0", optional = true, features = ["rt", "rt-multi-thread", "macros"] }
+socket2 = { version = "0.5.5", optional = true}
+thiserror = { version = "1.0.57", optional = true}
+eyre = { version = "0.6.12", optional = true }
+num-traits = "0.2.18"
+
+[features]
+stbchat = ["dep:eyre", "dep:thiserror", "dep:tokio", "dep:rmp-serde", "dep:socket2"]
+stbchat-sync = ["stbchat"]
+stbchat-scapi = ["stbchat"]
