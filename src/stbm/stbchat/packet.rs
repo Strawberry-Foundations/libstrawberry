@@ -54,6 +54,11 @@ pub enum ServerPacket {
         username: String,
         password: String
     },
+    Register {
+        username: String,
+        password: String,
+        role_color: String,
+    },
     Message {
         message: String
     },
