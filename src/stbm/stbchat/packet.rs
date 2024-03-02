@@ -35,6 +35,23 @@ pub enum ClientPacket {
     #[serde(rename = "stbchat_backend")]
     Backend {
         user_meta: UserMeta
+    },
+    #[serde(rename = "stbchat_api")]
+    ApiResponse {
+        response_type: String,
+        response: StbchatApiResponse
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+#[serde(tag = "api_response")]
+pub enum StbchatApiResponse {
+    #[serde(rename = "new_user")]
+    NewUser {
+        username: String,
+        nickname: String,
+        role_color: String,
+        badge: String,
     }
 }
 
