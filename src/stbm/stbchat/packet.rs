@@ -64,5 +64,6 @@ pub enum ServerPacket {
     },
     ApiRequest {
         request_type: String
-    }
+    },
+    KeepAlive
 }
