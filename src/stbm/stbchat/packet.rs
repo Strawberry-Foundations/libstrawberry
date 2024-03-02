@@ -1,7 +1,7 @@
 #![allow(clippy::future_not_send, clippy::needless_pass_by_value)]
 
 use serde::{Deserialize, Serialize};
-use crate::stbm::stbchat::object::{User, UserMeta};
+use crate::stbm::stbchat::object::{StbchatApiResponse, User, UserMeta};
 
 /// # A packet sent from the server to the client (Server -> Client)
 /// - `SystemMessage`: A message sent from the system
@@ -43,17 +43,6 @@ pub enum ClientPacket {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(tag = "api_response")]
-pub enum StbchatApiResponse {
-    #[serde(rename = "new_user")]
-    NewUser {
-        username: String,
-        nickname: String,
-        role_color: String,
-        badge: String,
-    }
-}
 
 /// # A packet sent from the client to the server (Client -> Server)
 /// - `Login`: A event packet for receiving the users credentials
