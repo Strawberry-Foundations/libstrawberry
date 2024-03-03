@@ -1,3 +1,4 @@
+#![cfg(target_os = "windows")]
 use std::process::Command;
 use winrt_notification::{Duration, IconCrop, Sound, Toast};
 
