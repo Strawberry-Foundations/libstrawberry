@@ -120,8 +120,10 @@ impl<R: AsyncReadExt + Unpin> IncomingPacketStream<R> {
         Self { stream }
     }
 
+    /// # IncomingPacketStream (Async)
+    /// Read packet(s) from remote clients
     /// # Errors
-    /// - Will error ...
+    /// - Will error when timeout is reached
     pub async fn read<P: DeserializeOwned>(&mut self) -> eyre::Result<P> {
         let len = self.stream.read_u16().await?;
         let mut buffer = vec![0; len as usize];
