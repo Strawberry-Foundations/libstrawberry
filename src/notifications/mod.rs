@@ -1,12 +1,12 @@
 pub mod os;
 pub mod notifiers;
 
-#[cfg(target_os = "unix")]
+#[cfg(target_os = "linux")]
 use crate::notifications::notifiers::linux::{LinuxDBusNotifier, LinuxLibNotifyNotifier};
 #[cfg(target_os = "windows")]
 use crate::notifications::notifiers::windows::{WindowsLegacyNotifier, WindowsNotifier};
-
 use crate::notifications::notifiers::BaseNotifier;
+
 use crate::notifications::os::OS;
 
 pub struct Notifier {
@@ -93,10 +93,10 @@ impl Notifier {
 
     pub fn send(self,) -> bool {
         match self.internal_notifier.system {
-            #[cfg(target_os = "unix")]
+            #[cfg(target_os = "linux")]
             OS::Linux => LinuxDBusNotifier::new(self).notification_send(),
 
-            #[cfg(target_os = "unix")]
+            #[cfg(target_os = "linux")]
             OS::LinuxLibNotify => LinuxLibNotifyNotifier::new(self).notification_send(),
 
             #[cfg(target_os = "windows")]
