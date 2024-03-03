@@ -3,8 +3,10 @@ pub mod notifiers;
 
 #[cfg(target_os = "unix")]
 use crate::notifications::notifiers::linux::{LinuxDBusNotifier, LinuxLibNotifyNotifier};
-use crate::notifications::notifiers::BaseNotifier;
+#[cfg(target_os = "windows")]
 use crate::notifications::notifiers::windows::{WindowsLegacyNotifier, WindowsNotifier};
+
+use crate::notifications::notifiers::BaseNotifier;
 use crate::notifications::os::OS;
 
 pub struct Notifier {
@@ -22,7 +24,6 @@ pub struct InternalNotifierObject {
     pub system: &'static OS,
     pub override_windows_version_detection: bool,
     pub override_windows_version: Option<String>,
-
 }
 
 impl Default for Notifier {
@@ -70,7 +71,18 @@ impl Notifier {
         if self.internal_notifier.system == &OS::Undefined {
             self.internal_notifier.system = match std::env::consts::OS {
                 "linux" => &OS::Linux,
-                "windows" => &OS::Windows,
+                "windows" => {
+                    let version = os_info::get().version().to_string();
+                    let version: Vec<&str> = version.split(".").collect();
+                    let version = *version.first().unwrap();
+                    
+                    if version == "10" || version == "11" {
+                        &OS::Windows
+                    }
+                    else {
+                        &OS::WindowsLegacy
+                    }
+                }
                 "macos" => &OS::MacOS,
                 _ => &OS::Unknown
             }
@@ -83,9 +95,14 @@ impl Notifier {
         match self.internal_notifier.system {
             #[cfg(target_os = "unix")]
             OS::Linux => LinuxDBusNotifier::new(self).notification_send(),
+
             #[cfg(target_os = "unix")]
             OS::LinuxLibNotify => LinuxLibNotifyNotifier::new(self).notification_send(),
+
+            #[cfg(target_os = "windows")]
             OS::Windows => WindowsNotifier::new(self).notification_send(),
+
+            #[cfg(target_os = "windows")]
             OS::WindowsLegacy => WindowsLegacyNotifier::new(self).notification_send(),
             _ => {
                 eprintln!("Unsupported operating system");
