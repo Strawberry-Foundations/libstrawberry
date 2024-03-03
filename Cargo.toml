@@ -1,6 +1,6 @@
 [package]
 name = "stblib"
-version = "0.5.11"
+version = "0.5.12"
 edition = "2021"
 authors = ["Juliandev02 <julian@strawberryfoundations.xyz>", "Paddyk45", "matteodev8"]
 description = "stblib is a simple library used mostly by Strawberry Foundation's Projects"
@@ -8,7 +8,7 @@ license = "AGPL-3.0-only"
 repository = "https://github.com/Strawberry-Foundations/stblib-rust"
 
 [package.metadata.docs.rs]
-all-features = true
+features = ["stbchat", "stbchat-scapi"]
 default-target = "x86_64-unknown-linux-gnu"
 targets = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
 
