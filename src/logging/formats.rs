@@ -11,6 +11,7 @@ pub struct LogFormat {
     pub default: String,
     pub warning: String,
     pub critical: String,
+    pub panic: String,
     pub extensions: LogFormatExt
 }
 
@@ -22,6 +23,7 @@ pub fn strawberry_chat_fmt() -> LogFormat {
         default: format!("{C_RESET}{BOLD}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}   [%<message>%]"),
         warning: format!("{C_RESET}{BOLD}[%<time>%] {YELLOW}[%<levelname>%]{C_RESET} [%<message>%]"),
         critical: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET} [%<message>%]"),
+        panic: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET}   [%<message>%]"),
         extensions: LogFormatExt {
             time_fmt: "%Y-%m-%d %H:%M".to_string(),
             levelname_lowercase: false
