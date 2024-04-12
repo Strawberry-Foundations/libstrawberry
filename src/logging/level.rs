@@ -3,5 +3,6 @@ pub enum LogLevel {
     INFO,
     ERROR,
     WARNING,
-    CRITICAL
+    CRITICAL,
+    PANIC
 }
