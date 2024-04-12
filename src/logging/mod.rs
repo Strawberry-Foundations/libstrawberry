@@ -28,7 +28,8 @@ impl Logger {
             LogLevel::INFO => "INFO",
             LogLevel::ERROR => "ERROR",
             LogLevel::WARNING => "WARNING",
-            LogLevel::CRITICAL => "CRITICAL"
+            LogLevel::CRITICAL => "CRITICAL",
+            LogLevel::PANIC => "PANIC",
         };
 
         if self.formatting.extensions.levelname_lowercase {
@@ -74,6 +75,13 @@ impl Logger {
                     .replace("[%<message>%]", &content.to_string())
                     .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
             },
+
+            LogLevel::PANIC => {
+                self.formatting.panic
+                    .replace("[%<levelname>%]", &self.loglevel_parser(level))
+                    .replace("[%<message>%]", &content.to_string())
+                    .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
+            },
         }
     }
 
@@ -97,13 +105,22 @@ impl Logger {
         println!("{}", self.parse(&LogLevel::CRITICAL, log_message));
     }
 
-    pub fn panic(&self, log_message: impl Display) -> ! {
+    pub fn panic(&self, log_message: impl Display) {
+        println!("{}", self.parse(&LogLevel::PANIC, log_message));
+    }
+
+    pub fn error_panic(&self, log_message: impl Display) -> ! {
         println!("{}", self.parse(&LogLevel::ERROR, log_message));
         std::process::exit(1);
     }
 
-    pub fn panic_critical(&self, log_message: impl Display) -> ! {
+    pub fn critical_panic(&self, log_message: impl Display) -> ! {
         println!("{}", self.parse(&LogLevel::CRITICAL, log_message));
+        std::process::exit(1);
+    }
+
+    pub fn panic_crash(&self, log_message: impl Display) -> ! {
+        println!("{}", self.parse(&LogLevel::PANIC, log_message));
         std::process::exit(1);
     }
 }
