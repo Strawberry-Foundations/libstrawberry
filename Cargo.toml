@@ -18,7 +18,7 @@ targets = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
 [dependencies]
 reqwest = { version = "0.12.3", features = ["blocking"] }
 serde = { version = "1.0.197", features = ["derive"] }
-serde_json = "1.0.114"
+serde_json = "1.0.115"
 serde_yaml = "0.9.34+deprecated"
 rustyline = "14.0.0"
 chrono = "0.4.34"
