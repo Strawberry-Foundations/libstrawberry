@@ -3,9 +3,11 @@ name = "stblib"
 version = "0.6.0"
 edition = "2021"
 authors = ["Juliandev02 <julian@strawberryfoundations.xyz>", "Paddyk45", "matteodev8"]
-description = "stblib is a simple library used mostly by Strawberry Foundation's Projects"
+description = "stblib is a simple library that takes over and simplifies important and useful tasks."
 license = "AGPL-3.0-only"
 repository = "https://github.com/Strawberry-Foundations/stblib-rust"
+keywords = ["notifications", "strawberry-chat", "network", "colors", "localization"]
+categories = ["localization", "network-programming"]
 
 [package.metadata.docs.rs]
 features = ["stbchat", "stbchat-scapi", "notifications", "email"]
