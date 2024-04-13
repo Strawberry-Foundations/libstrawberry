@@ -1,10 +1,12 @@
 use crate::colors::{BLUE, BOLD, C_RESET, RED, YELLOW};
 
+/// Struct for creating a log format
 pub struct LogFormatExt {
     pub time_fmt: String,
     pub levelname_lowercase: bool,
 }
 
+/// Struct for creating a log format
 pub struct LogFormat {
     pub info: String,
     pub error: String,
@@ -15,6 +17,7 @@ pub struct LogFormat {
     pub extensions: LogFormatExt
 }
 
+/// Pre-defined log format used by Strawberry Chat
 #[must_use]
 pub fn strawberry_chat_fmt() -> LogFormat {
     LogFormat {
