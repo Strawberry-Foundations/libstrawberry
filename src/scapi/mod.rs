@@ -22,8 +22,8 @@ use crate::scapi::command::Command;
 use crate::scapi::context::{Channel, Context};
 use crate::scapi::flags::BotFlags;
 use crate::scapi::permissions::PermissionList;
-use crate::stbm::stbchat::net::{IncomingPacketStream, OutgoingPacketStream};
-use crate::stbm::stbchat::packet::{ClientPacket, ServerPacket};
+use crate::stbchat::net::{IncomingPacketStream, OutgoingPacketStream};
+use crate::stbchat::packet::{ClientPacket, ServerPacket};
 use crate::utilities::current_time;
 
 const VERSION: &str = "1.0.0";
