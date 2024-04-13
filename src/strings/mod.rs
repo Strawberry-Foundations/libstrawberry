@@ -2,12 +2,14 @@ use serde_yaml::Value;
 use std::fs;
 use crate::colors::{BLUE, BOLD, C_RESET, CYAN, GREEN, MAGENTA, RED, RESET, UNDERLINE, WHITE, YELLOW};
 
+/// Strings (String Loader) is a Stblib function to simplify the localization of Rust programs.
 pub struct Strings {
     pub language: String,
     pub lang_str_object: Value,
     pub replace_placeholders: bool,
 }
 
+/// Load data from a file
 /// # Panics
 ///
 /// - Will panic when file cannot be read as string
@@ -18,6 +20,7 @@ pub fn load_language_file(path: &str) -> String {
 }
 
 impl Strings {
+    /// Create a new Strings object
     /// # Panics
     ///
     /// - Will panic when serde couldn't convert to yaml from str
@@ -33,6 +36,7 @@ impl Strings {
         }
     }
 
+    /// Create a new Strings object with the use of color placeholders
     /// # Panics
     ///
     /// - Will panic when serde couldn't convert to yaml from str
@@ -48,6 +52,7 @@ impl Strings {
         }
     }
 
+    /// Load a string
     /// # Panics
     ///
     /// - Will panic when string cannot be loaded from language file
@@ -75,6 +80,7 @@ impl Strings {
         }
     }
 
+    /// Load a string and replace the given parameters with the placeholders inside the string
     /// # Panics
     ///
     /// - Will panic when string cannot be loaded from language file
@@ -106,6 +112,7 @@ impl Strings {
     }
 }
 
+/// Macro for loading strings. Requires the stringloader object. `str!(my_loader, "hello")`
 #[macro_export]
 macro_rules! str {
     ($loader:expr, $string:expr) => {
