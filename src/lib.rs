@@ -14,4 +14,3 @@ pub mod constants;
 pub mod stbchat;
 pub mod email;
 #[cfg(feature = "notifications")] pub mod notifications;
-mod stbchat;
