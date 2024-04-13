@@ -17,11 +17,13 @@ use serde::de::DeserializeOwned;
 
 use crate::stbm::stbchat::error;
 
+/// Async Package Stream for outgoing packages
 #[cfg(not(feature = "stbchat-sync"))]
 pub struct OutgoingPacketStream<S: AsyncWriteExt + Unpin> {
     stream: S
 }
 
+/// Sync Package Stream for outgoing packages
 #[cfg(feature = "stbchat-sync")]
 pub struct OutgoingPacketStream<S: Write + Unpin> {
     stream: S
@@ -29,10 +31,12 @@ pub struct OutgoingPacketStream<S: Write + Unpin> {
 
 #[cfg(not(feature = "stbchat-sync"))]
 impl<W: AsyncWriteExt + Unpin> OutgoingPacketStream<W> {
+    /// Wrap an existing async stream into the OutgoingPacketStream
     pub const fn wrap(stream: W) -> Self {
         Self { stream }
     }
 
+    /// Write a packet to the stream
     /// # Errors
     /// - Will return `Err` if packet size is too large
     ///
@@ -56,10 +60,12 @@ impl<W: AsyncWriteExt + Unpin> OutgoingPacketStream<W> {
         Ok(())
     }
 
+    /// Returns the wrapped streams
     pub fn unwrap(self) -> W {
         self.stream
     }
 
+    /// Returns the wrapped stream as a mutable
     pub fn inner_mut(&mut self) -> &mut W {
         &mut self.stream
     }
@@ -67,10 +73,12 @@ impl<W: AsyncWriteExt + Unpin> OutgoingPacketStream<W> {
 
 #[cfg(feature = "stbchat-sync")]
 impl<W: Write + Unpin> OutgoingPacketStream<W> {
+    /// Wrap an existing sync stream into the OutgoingPacketStream
     pub const fn wrap(stream: W) -> Self {
         Self { stream }
     }
 
+    /// Write a packet to the stream
     /// # Errors
     /// - Will return `Err` if packet size is too large
     ///
@@ -94,21 +102,24 @@ impl<W: Write + Unpin> OutgoingPacketStream<W> {
         Ok(())
     }
 
+    /// Returns the wrapped streams
     pub fn unwrap(self) -> W {
         self.stream
     }
 
+    /// Returns the wrapped stream as a mutable
     pub fn inner_mut(&mut self) -> &mut W {
         &mut self.stream
     }
 }
 
-
+/// Async Package Stream for incoming packages
 #[cfg(not(feature = "stbchat-sync"))]
 pub struct IncomingPacketStream<R: AsyncReadExt + Unpin> {
     stream: R
 }
 
+/// Sync Package Stream for incoming packages
 #[cfg(feature = "stbchat-sync")]
 pub struct IncomingPacketStream<R: Read + Unpin> {
     stream: R
@@ -116,6 +127,7 @@ pub struct IncomingPacketStream<R: Read + Unpin> {
 
 #[cfg(not(feature = "stbchat-sync"))]
 impl<R: AsyncReadExt + Unpin> IncomingPacketStream<R> {
+    /// Wrap an existing async stream into the IncomingPacketStream
     pub const fn wrap(stream: R) -> Self {
         Self { stream }
     }
@@ -131,6 +143,7 @@ impl<R: AsyncReadExt + Unpin> IncomingPacketStream<R> {
         Ok(rmp_serde::from_read(buffer.as_slice())?)
     }
 
+    /// Returns the wrapped streams
     pub fn unwrap(self) -> R {
         self.stream
     }
@@ -138,12 +151,15 @@ impl<R: AsyncReadExt + Unpin> IncomingPacketStream<R> {
 
 #[cfg(feature = "stbchat-sync")]
 impl<R: Read + Unpin> IncomingPacketStream<R> {
+    /// Wrap an existing sync stream into the IncomingPacketStream
     pub const fn wrap(stream: R) -> Self {
         Self { stream }
     }
 
+    /// # IncomingPacketStream (Sync)
+    /// Read packet(s) from remote clients
     /// # Errors
-    /// - Will error ...
+    /// - Will error if reading from stream fails
     pub fn read<P: DeserializeOwned>(&mut self) -> eyre::Result<P> {
         let mut len_buf = [0u8; 2];
         self.stream.read_exact(&mut len_buf)?;
@@ -155,6 +171,7 @@ impl<R: Read + Unpin> IncomingPacketStream<R> {
         Ok(rmp_serde::from_read(buffer.as_slice())?)
     }
 
+    /// Returns the wrapped streams
     pub fn unwrap(self) -> R {
         self.stream
     }
