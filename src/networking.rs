@@ -22,6 +22,7 @@ impl UrlRequest {
     }
 }
 
+#[allow(deprecated)]
 impl UrlHandler {
     /// Url Handler struct for requesting an url from a created struct
     /// This feature has been deprecated as it is no longer used and has no purpose.
