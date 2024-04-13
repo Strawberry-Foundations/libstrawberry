@@ -34,12 +34,13 @@ num-traits = "0.2.18"
 os_info = "3.8.2"
 
 [target.'cfg(unix)'.dependencies]
-dbus = "0.6.5"
+dbus = { version = "0.6.5", optional = true }
 
 [target.'cfg(windows)'.dependencies]
-winrt-notification = "0.5.1"
+winrt-notification = { version = "0.5.1", optional = true }
 
 [features]
 stbchat = ["dep:eyre", "dep:thiserror", "dep:tokio", "dep:rmp-serde", "dep:socket2"]
 stbchat-sync = ["stbchat"]
 stbchat-scapi = ["stbchat"]
+notifications = ["dep:dbus", "dep:winrt-notification"]
