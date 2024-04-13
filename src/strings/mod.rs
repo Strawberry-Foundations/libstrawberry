@@ -54,8 +54,6 @@ impl Strings {
 
     #[must_use]
     pub fn load(&self, string: &str) -> String {
-        let string = &self.lang_str_object[&self.language][string].as_str().unwrap();
-
         if self.replace_placeholders {
             let string = &self.lang_str_object[&self.language][string].as_str();
 
@@ -73,7 +71,7 @@ impl Strings {
                 .replace("{underline}", UNDERLINE)
         }
         else {
-            (*string).to_string()
+            self.lang_str_object[&self.language][string].as_str().unwrap().to_string()
         }
     }
 
