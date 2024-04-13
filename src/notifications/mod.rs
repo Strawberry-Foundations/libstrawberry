@@ -1,3 +1,4 @@
+#![cfg(feature = "notifications")]
 pub mod os;
 pub mod notifiers;
 
