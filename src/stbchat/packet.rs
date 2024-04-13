@@ -1,7 +1,7 @@
 #![allow(clippy::future_not_send, clippy::needless_pass_by_value)]
 
 use serde::{Deserialize, Serialize};
-use crate::stbm::stbchat::object::{StbchatApiResponse, User, UserMeta};
+use crate::stbchat::object::{StbchatApiResponse, User, UserMeta};
 
 /// # A packet sent from the server to the client (Server -> Client)
 /// - `SystemMessage`: A message sent from the system
