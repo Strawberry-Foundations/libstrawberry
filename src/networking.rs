@@ -1,6 +1,6 @@
 pub struct UrlRequest;
 
-#[deprecated(since = "0.5.16", note = "This feature has been deprecated as it is no longer used and has no purpose.")]
+#[deprecated(since = "0.6.0", note = "This feature has been deprecated as it is no longer used and has no purpose.")]
 pub struct UrlHandler {
     pub url: String,
 }
@@ -29,7 +29,7 @@ impl UrlHandler {
     ///
     /// - Will return `Err` if `url` is not reachable
     
-    #[deprecated(since = "0.5.16", note = "This feature has been deprecated as it is no longer used and has no purpose.")]
+    #[deprecated(since = "0.6.0", note = "This feature has been deprecated as it is no longer used and has no purpose.")]
     pub fn request(&self) -> Result<String, String> {
         reqwest::blocking::get(&self.url).map_or_else(
             |e| Err(format!("Error while requesting url: {e}")),
