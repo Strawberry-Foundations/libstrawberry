@@ -1,7 +1,7 @@
 use tokio::io::WriteHalf;
 use tokio::net::TcpStream;
-use crate::stbm::stbchat::net::OutgoingPacketStream;
-use crate::stbm::stbchat::packet::ServerPacket;
+use crate::stbchat::net::OutgoingPacketStream;
+use crate::stbchat::packet::ServerPacket;
 
 pub struct Context {
     /// The user who executed the command
