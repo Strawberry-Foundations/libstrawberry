@@ -8,7 +8,7 @@ license = "AGPL-3.0-only"
 repository = "https://github.com/Strawberry-Foundations/stblib-rust"
 
 [package.metadata.docs.rs]
-features = ["stbchat", "stbchat-scapi"]
+features = ["stbchat", "stbchat-scapi", "notifications"]
 default-target = "x86_64-unknown-linux-gnu"
 targets = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
 
