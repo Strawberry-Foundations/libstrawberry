@@ -8,6 +8,7 @@ pub struct FileStruct {
 }
 
 impl FileHandler {
+    /// Simple file handler to read a file
     /// # Panics
     ///
     /// - Will panic if file is not readable
@@ -24,7 +25,7 @@ impl FileHandler {
 
         content
     }
-
+    /// Simple file handler to write to a file
     /// # Panics
     ///
     /// - Will panic if file is not writeable
@@ -39,7 +40,9 @@ impl FileHandler {
     }
 }
 
+/// Simple file struct for creating an object that can be used to read or write from or to the file
 impl FileStruct {
+    /// Read data from the file struct
     /// # Panics
     ///
     /// - Will panic if file is not readable
@@ -58,6 +61,7 @@ impl FileStruct {
         content
     }
 
+    /// Write data to the file struct
     /// # Panics
     ///
     /// - Will panic if file is not writeable
