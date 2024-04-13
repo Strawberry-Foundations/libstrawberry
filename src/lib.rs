@@ -11,6 +11,7 @@ pub mod colors;
 pub mod strings;
 pub mod logging;
 pub mod constants;
-pub mod stbm;
+pub mod stbchat;
 pub mod email;
 #[cfg(feature = "notifications")] pub mod notifications;
+mod stbchat;
