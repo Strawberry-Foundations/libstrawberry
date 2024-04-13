@@ -15,7 +15,7 @@ use eyre::bail;
 use serde::Serialize;
 use serde::de::DeserializeOwned;
 
-use crate::stbm::stbchat::error;
+use crate::stbchat::error;
 
 /// Async Package Stream for outgoing packages
 #[cfg(not(feature = "stbchat-sync"))]
