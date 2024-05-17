@@ -6,11 +6,13 @@ pub mod file;
 pub mod utilities;
 pub mod networking;
 pub mod fmt;
-#[cfg(feature = "stbchat-scapi")] pub mod scapi;
 pub mod colors;
 pub mod strings;
 pub mod logging;
 pub mod constants;
 pub mod stbchat;
 pub mod email;
+pub mod id;
+
 #[cfg(feature = "notifications")] pub mod notifications;
+#[cfg(feature = "stbchat-scapi")] pub mod scapi;
