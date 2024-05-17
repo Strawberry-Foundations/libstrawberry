@@ -33,6 +33,7 @@ thiserror = { version = "1.0.60", optional = true}
 eyre = { version = "0.6.12", optional = true }
 num-traits = "0.2.19"
 os_info = "3.8.2"
+dirs = "5.0.1"
 
 [target.'cfg(unix)'.dependencies]
 dbus = { version = "0.6.5", optional = true }
