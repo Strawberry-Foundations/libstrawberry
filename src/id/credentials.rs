@@ -4,13 +4,13 @@ use serde::{Deserialize, Serialize};
 use crate::id::error::CredentialsError;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
-pub struct StrawberryIdAuthenticator {
+pub struct StrawberryIdCredentials {
     pub username: Option<String>,
     pub token: Option<String>,
 }
 
-impl StrawberryIdAuthenticator {
-    pub fn fetch() -> Result<StrawberryIdAuthenticator, Box<dyn std::error::Error>> {
+impl StrawberryIdCredentials {
+    pub fn fetch() -> Result<StrawberryIdCredentials, eyre::Error> {
         if let Some(home_dir) = dirs::home_dir() {
             let config_dir = home_dir.join(".config").join("strawberry-id");
             let credentials_path = config_dir.join("credentials.yml");
@@ -18,14 +18,14 @@ impl StrawberryIdAuthenticator {
             if credentials_path.exists() {
                 let credentials_str = fs::read_to_string(&credentials_path)?;
 
-                let credentials: StrawberryIdAuthenticator = serde_yaml::from_str(&credentials_str)?;
+                let credentials: StrawberryIdCredentials = serde_yaml::from_str(&credentials_str)?;
 
                 Ok(credentials)
             } else {
-                Err(Box::from(CredentialsError::MissingCredentials))
+                Err(CredentialsError::MissingCredentials.into())
             }
         } else {
-            Err(Box::from(CredentialsError::HomeNotFound))
+            Err(CredentialsError::HomeNotFound.into())
         }
     }
 
