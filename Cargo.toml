@@ -10,7 +10,7 @@ keywords = ["notifications", "strawberry-chat", "network", "colors", "localizati
 categories = ["localization", "network-programming"]
 
 [package.metadata.docs.rs]
-features = ["stbchat", "stbchat-scapi", "notifications", "email"]
+features = ["stbchat", "stbchat-scapi", "notifications", "email", "plugin"]
 default-target = "x86_64-unknown-linux-gnu"
 targets = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
 
@@ -48,3 +48,4 @@ stbchat-scapi = ["stbchat"]
 notifications = ["dep:dbus", "dep:winrt-notification"]
 email = ["dep:lettre"]
 full = ["stbchat", "stbchat-scapi", "notifications", "email"]
+plugin = []
