@@ -13,6 +13,9 @@ pub mod constants;
 pub mod stbchat;
 pub mod email;
 pub mod id;
+pub mod external;
 
 #[cfg(feature = "notifications")] pub mod notifications;
 #[cfg(feature = "stbchat-scapi")] pub mod scapi;
+
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
