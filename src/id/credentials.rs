@@ -10,6 +10,8 @@ pub struct StrawberryIdCredentials {
 }
 
 impl StrawberryIdCredentials {
+    /// # Errors
+    /// Will return `Err` if user home was not found or the credentials file not exists
     pub fn fetch() -> Result<Self, eyre::Error> {
         if let Some(home_dir) = dirs::home_dir() {
             let config_dir = home_dir.join(".config").join("strawberry-id");
@@ -29,6 +31,13 @@ impl StrawberryIdCredentials {
         }
     }
 
+    /// # Errors
+    /// Will return `Err` if ...
+    /// - User home was not found
+    /// - User already logged in
+    /// - The strawberry-id config directory could not be created
+    /// - Serialize error
+    /// - Write error
     pub fn save(username: String, token: String) -> eyre::Result<()> {
         if let Some(home_dir) = dirs::home_dir() {
             let config_dir = home_dir.join(".config").join("strawberry-id");
@@ -46,14 +55,14 @@ impl StrawberryIdCredentials {
                     token,
                 };
 
-                match serde_yaml::to_string(&credentials) {
+                return match serde_yaml::to_string(&credentials) {
                     Ok(credentials_str) => {
                         if let Err(err) = fs::write(&credentials_path, credentials_str) {
                             return Err(CredentialsError::WriteError(err.to_string()).into())
                         }
-                        return Ok(())
+                        Ok(())
                     }
-                    Err(err) => return Err(CredentialsError::SerializeError(err.to_string()).into()),
+                    Err(err) => Err(CredentialsError::SerializeError(err.to_string()).into()),
                 }
             }
             return Err(CredentialsError::AlreadyExists.into())
