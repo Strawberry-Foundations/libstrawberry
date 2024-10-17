@@ -10,7 +10,7 @@ pub struct StrawberryIdCredentials {
 }
 
 impl StrawberryIdCredentials {
-    pub fn fetch() -> Result<StrawberryIdCredentials, eyre::Error> {
+    pub fn fetch() -> Result<Self, eyre::Error> {
         if let Some(home_dir) = dirs::home_dir() {
             let config_dir = home_dir.join(".config").join("strawberry-id");
             let credentials_path = config_dir.join("credentials.yml");
@@ -18,7 +18,7 @@ impl StrawberryIdCredentials {
             if credentials_path.exists() {
                 let credentials_str = fs::read_to_string(&credentials_path)?;
 
-                let credentials: StrawberryIdCredentials = serde_yaml::from_str(&credentials_str)?;
+                let credentials: Self = serde_yaml::from_str(&credentials_str)?;
 
                 Ok(credentials)
             } else {
@@ -41,7 +41,7 @@ impl StrawberryIdCredentials {
             }
 
             if !credentials_path.exists() {
-                let credentials = StrawberryIdCredentials {
+                let credentials = Self {
                     username,
                     token,
                 };
@@ -59,6 +59,6 @@ impl StrawberryIdCredentials {
             return Err(CredentialsError::AlreadyExists.into())
 
         }
-        return Err(CredentialsError::HomeNotFound.into())
+        Err(CredentialsError::HomeNotFound.into())
     }
 }
