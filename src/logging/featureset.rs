@@ -1,10 +1,16 @@
-/// Struct for creating a custom featureset for stblib::logger
+/// Struct for creating a custom featureset for `stblib::logger`
 pub struct FeatureSet {
     pub enable_file_handler: bool,
 }
 
 pub enum Features {
     FileHandler,
+}
+
+impl Default for FeatureSet {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl FeatureSet {
