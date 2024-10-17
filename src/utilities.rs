@@ -6,12 +6,12 @@ use chrono::prelude::*;
 use regex::Regex;
 
 
-/// Simplified version of thread:sleep() for waiting x seconds
+/// Simplified version of `thread:sleep()` for waiting x seconds
 pub fn sleep(time: u64) {
     thread::sleep(Duration::from_secs(time));
 }
 
-/// Simplified version of thread:sleep() for waiting x milliseconds
+/// Simplified version of `thread:sleep()` for waiting x milliseconds
 pub fn ms_sleep(time: u64) {
     thread::sleep(Duration::from_millis(time));
 }
