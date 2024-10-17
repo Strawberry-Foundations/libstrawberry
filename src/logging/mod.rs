@@ -43,7 +43,7 @@ impl Logger {
     }
 
     /// Will parse various placeholders that can be used by custom logging formats
-    fn parse(&self, level: &LogLevel, content: impl ToString) -> String {
+    fn parse(&self, level: &LogLevel, content: &impl ToString) -> String {
         match level {
             LogLevel::DEFAULT => {
                 self.formatting.default
@@ -91,49 +91,49 @@ impl Logger {
 
     /// Default log function
     pub fn default(&self, log_message: impl Display) {
-        println!("{}", self.parse(&LogLevel::DEFAULT, log_message));
+        println!("{}", self.parse(&LogLevel::DEFAULT, &log_message));
     }
     
     /// Info log function
     pub fn info(&self, log_message: impl Display) {
-        println!("{}", self.parse(&LogLevel::INFO, log_message));
+        println!("{}", self.parse(&LogLevel::INFO, &log_message));
     }
 
     /// Error log function
     pub fn error(&self, log_message: impl Display) {
-        println!("{}", self.parse(&LogLevel::ERROR, log_message));
+        println!("{}", self.parse(&LogLevel::ERROR, &log_message));
     }
 
     /// Warning log function
     pub fn warning(&self, log_message: impl Display) {
-        println!("{}", self.parse(&LogLevel::WARNING, log_message));
+        println!("{}", self.parse(&LogLevel::WARNING, &log_message));
     }
     
     /// Critical log function
     pub fn critical(&self, log_message: impl Display) {
-        println!("{}", self.parse(&LogLevel::CRITICAL, log_message));
+        println!("{}", self.parse(&LogLevel::CRITICAL, &log_message));
     }
 
     /// Panic log function
     pub fn panic(&self, log_message: impl Display) {
-        println!("{}", self.parse(&LogLevel::PANIC, log_message));
+        println!("{}", self.parse(&LogLevel::PANIC, &log_message));
     }
 
     /// Panic log function which will exit with exit code 1
     pub fn error_panic(&self, log_message: impl Display) -> ! {
-        println!("{}", self.parse(&LogLevel::ERROR, log_message));
+        println!("{}", self.parse(&LogLevel::ERROR, &log_message));
         std::process::exit(1);
     }
 
     /// Critical log function which will exit with exit code 1
     pub fn critical_panic(&self, log_message: impl Display) -> ! {
-        println!("{}", self.parse(&LogLevel::CRITICAL, log_message));
+        println!("{}", self.parse(&LogLevel::CRITICAL, &log_message));
         std::process::exit(1);
     }
 
     /// Panic log function which will exit with exit code 1
     pub fn panic_crash(&self, log_message: impl Display) -> ! {
-        println!("{}", self.parse(&LogLevel::PANIC, log_message));
+        println!("{}", self.parse(&LogLevel::PANIC, &log_message));
         std::process::exit(1);
     }
 }
