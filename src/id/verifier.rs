@@ -12,13 +12,13 @@ pub struct StrawberryIdVerifier {
 }
 
 impl StrawberryIdVerifier {
-    pub fn verify(credentials: StrawberryIdCredentials) -> eyre::Result<StrawberryIdVerifier, eyre::Error> {
+    pub fn verify(credentials: StrawberryIdCredentials) -> eyre::Result<Self, eyre::Error> {
         let api_response = reqwest::blocking::get(format!(
             "{STRAWBERRY_ID_API}api/auth?username={}&token={}", 
             credentials.username, credentials.token
         ))?.text()?;
         
-        let mut verifier = StrawberryIdVerifier::default();
+        let mut verifier = Self::default();
         
         if let Ok(data) = serde_json::from_str::<Value>(&api_response) {
             if data["data"]["status"] == "Ok" {
@@ -27,7 +27,7 @@ impl StrawberryIdVerifier {
                 verifier.strawberry_id.profile_picture = data["data"]["user"]["profile_picture_url"].as_str().unwrap().to_string();
                 verifier.strawberry_id.username = data["data"]["user"]["username"].as_str().unwrap().to_string();
 
-                return Ok(verifier.to_owned())
+                return Ok(verifier)
             }
         }
 
