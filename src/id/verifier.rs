@@ -12,7 +12,12 @@ pub struct StrawberryIdVerifier {
 }
 
 impl StrawberryIdVerifier {
-    pub fn verify(credentials: StrawberryIdCredentials) -> eyre::Result<Self, eyre::Error> {
+    /// # Panics
+    /// Will panic if results are not valid
+    ///
+    /// # Errors
+    /// Will return `Err` if the user credentials are not valid
+    pub fn verify(credentials: &StrawberryIdCredentials) -> eyre::Result<Self, eyre::Error> {
         let api_response = reqwest::blocking::get(format!(
             "{STRAWBERRY_ID_API}api/auth?username={}&token={}", 
             credentials.username, credentials.token
