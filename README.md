@@ -8,6 +8,8 @@ stblib offers many different functions for simplifying the writing of Rust code.
 * Logging for uncomplicated and simple logging of *some* things in a CLI application
 * Notifications to send notifications (who would have thought it)
 * Email to send e-mails
+* External plugin functionality
+
 and some (kinda) useful utilities!
 
 Visit our [documentation](https://docs.rs/stblib/latest/stblib/) on docs.rs for "detailed" documentation of stblib
