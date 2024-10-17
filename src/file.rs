@@ -13,7 +13,7 @@ impl FileHandler {
     ///
     /// - Will panic if file is not readable
     /// - Will panic if your current user does not have the
-    /// required permissions to open the file
+    ///   required permissions to open the file
 
     #[must_use]
     pub fn read_file(file_path: &str) -> String {
@@ -30,7 +30,7 @@ impl FileHandler {
     ///
     /// - Will panic if file is not writeable
     /// - Will panic if your current user does not have the
-    /// required permissions to open the file
+    ///   required permissions to open the file
 
     pub fn write_to_file(file_path: &str, content: &str) {
         let mut file = File::create(file_path).expect("Error while creating or opening file");
@@ -47,7 +47,7 @@ impl FileStruct {
     ///
     /// - Will panic if file is not readable
     /// - Will panic if your current user does not have the
-    /// required permissions to open the file
+    ///   required permissions to open the file
 
     #[must_use]
     pub fn read(&self) -> String {
@@ -66,7 +66,7 @@ impl FileStruct {
     ///
     /// - Will panic if file is not writeable
     /// - Will panic if your current user does not have the
-    /// required permissions to open the file
+    ///   required permissions to open the file
 
     pub fn write(&self, content: &str) {
         let mut file = File::create(&self.file_path).expect("Error while creating or opening file");
