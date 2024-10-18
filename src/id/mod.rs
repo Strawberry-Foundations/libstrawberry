@@ -1,6 +1,7 @@
 use eyre::Error;
 use serde_json::Value;
 use crate::constants::STRAWBERRY_ID_API;
+use crate::id::credentials::StrawberryIdCredentials;
 use crate::id::error::ApiError;
 
 pub mod credentials;
@@ -17,6 +18,12 @@ pub struct StrawberryId {
 }
 
 impl StrawberryId {
+    /// `request_code`
+    /// Requests a code to log in with your ID
+    /// # Errors
+    /// Will return `Err` if ...
+    /// - the server is not reachable
+    /// - the request was not successful
     pub async fn request_code() -> Result<String, Error> {
         let request = reqwest::get(format!("{STRAWBERRY_ID_API}api/request")).await?;
         let code = if request.status().is_success() {
@@ -31,6 +38,12 @@ impl StrawberryId {
         Ok(code)
     }
 
+    /// `callback`
+    /// Fetch user data with the help of the requested code
+    /// # Errors
+    /// Will return `Err` if the json data is not valid
+    /// # Panics
+    /// Will never panic
     pub async fn callback(code: String) -> Result<Option<Self>, Error> {
         let mut strawberry_id = Self::default();
 
@@ -61,6 +74,15 @@ impl StrawberryId {
         };
 
         Ok(Some(strawberry_id))
+    }
+
+    /// `to_credentials`
+    /// Convert struct `StrawberryID` to a `StrawberryIdCredentials` object
+    #[must_use] pub fn to_credentials(self) -> StrawberryIdCredentials {
+        StrawberryIdCredentials {
+            username: self.username,
+            token: self.token
+        }
     }
 
     fn serializer(text: &str) -> Result<Value, serde_json::Error> {
