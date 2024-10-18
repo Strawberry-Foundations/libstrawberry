@@ -14,11 +14,22 @@ pub enum CredentialsError {
     SerializeError(String),
     #[error("couldn't serialize data")]
     AlreadyExists,
-
 }
 
 #[derive(Error, Debug)]
 pub enum VerifierError {
     #[error("invalid user credentials")]
     InvalidCredentials,
+}
+
+#[derive(Error, Debug)]
+pub enum ApiError {
+    #[error("couldn't request login code")]
+    RequestError,
+    #[error("couldn't request strawberry id api server")]
+    ServerError,
+    #[error("requested code is in a invalid format")]
+    CodeNotBeingCode,
+    #[error("invalid data format")]
+    InvalidDataFormat,
 }
