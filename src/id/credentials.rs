@@ -39,7 +39,7 @@ impl StrawberryIdCredentials {
     /// - The strawberry-id config directory could not be created
     /// - Serialize error
     /// - Write error
-    pub fn save(username: String, token: String) -> eyre::Result<()> {
+    pub fn save(self) -> eyre::Result<()> {
         if let Some(home_dir) = dirs::home_dir() {
             let config_dir = home_dir.join(".config").join("strawberry-id");
             let credentials_path = config_dir.join("credentials.yml");
@@ -52,8 +52,8 @@ impl StrawberryIdCredentials {
 
             if !credentials_path.exists() {
                 let credentials = Self {
-                    username,
-                    token,
+                    username: self.username,
+                    token: self.token,
                 };
 
                 return match serde_yaml::to_string(&credentials) {
@@ -66,7 +66,7 @@ impl StrawberryIdCredentials {
                     Err(err) => Err(CredentialsError::SerializeError(err.to_string()).into()),
                 }
             }
-            return Err(CredentialsError::AlreadyExists.into())
+            return Err(CredentialsError::AlreadyExists(credentials_path).into())
 
         }
         Err(CredentialsError::HomeNotFound.into())
