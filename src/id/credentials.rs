@@ -1,4 +1,5 @@
 use std::fs;
+use eyre::Error;
 use serde::{Deserialize, Serialize};
 
 use crate::id::error::CredentialsError;
@@ -12,7 +13,7 @@ pub struct StrawberryIdCredentials {
 impl StrawberryIdCredentials {
     /// # Errors
     /// Will return `Err` if user home was not found or the credentials file not exists
-    pub fn fetch() -> Result<Self, eyre::Error> {
+    pub fn fetch() -> Result<Self, Error> {
         if let Some(home_dir) = dirs::home_dir() {
             let config_dir = home_dir.join(".config").join("strawberry-id");
             let credentials_path = config_dir.join("credentials.yml");
