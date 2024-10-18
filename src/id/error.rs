@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -12,8 +13,8 @@ pub enum CredentialsError {
     WriteError(String),
     #[error("couldn't serialize data")]
     SerializeError(String),
-    #[error("couldn't serialize data")]
-    AlreadyExists,
+    #[error("credentials already exists")]
+    AlreadyExists(PathBuf),
 }
 
 #[derive(Error, Debug)]
