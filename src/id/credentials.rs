@@ -51,10 +51,7 @@ impl StrawberryIdCredentials {
             }
 
             if !credentials_path.exists() {
-                let credentials = Self {
-                    username: self.username,
-                    token: self.token,
-                };
+                let credentials = self;
 
                 return match serde_yaml::to_string(&credentials) {
                     Ok(credentials_str) => {
