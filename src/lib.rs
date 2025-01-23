@@ -9,7 +9,6 @@ pub mod external;
 pub mod file;
 pub mod id;
 pub mod logging;
-pub mod networking;
 pub mod stbchat;
 pub mod strings;
 pub mod utilities;
