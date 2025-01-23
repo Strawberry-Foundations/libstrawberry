@@ -13,7 +13,6 @@ pub struct Strings {
 /// # Panics
 ///
 /// - Will panic when file cannot be read as string
-
 #[must_use]
 pub fn load_language_file(path: &str) -> String {
     fs::read_to_string(path).expect("Could not read language strings")
@@ -24,7 +23,6 @@ impl Strings {
     /// # Panics
     ///
     /// - Will panic when serde couldn't convert to yaml from str
-
     #[must_use]
     pub fn new(language: &str, lang_strings: &str) -> Self {
         let lang_object = serde_yaml::from_str(lang_strings).unwrap();
@@ -40,7 +38,6 @@ impl Strings {
     /// # Panics
     ///
     /// - Will panic when serde couldn't convert to yaml from str
-
     #[must_use]
     pub fn new_with_placeholders(language: &str, lang_strings: &str) -> Self {
         let lang_object = serde_yaml::from_str(lang_strings).unwrap();
@@ -56,7 +53,6 @@ impl Strings {
     /// # Panics
     ///
     /// - Will panic when string cannot be loaded from language file
-
     #[must_use]
     pub fn load(&self, string: &str) -> String {
         if self.replace_placeholders {
@@ -84,7 +80,6 @@ impl Strings {
     /// # Panics
     ///
     /// - Will panic when string cannot be loaded from language file
-
     #[must_use]
     pub fn load_with_params(&self, string: &str, params: &[&dyn std::fmt::Display]) -> String {
         let string = self.load(string);
