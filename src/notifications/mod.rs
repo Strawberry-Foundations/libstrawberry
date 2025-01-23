@@ -1,15 +1,33 @@
-#![cfg(feature = "notifications")]
-pub mod os;
 pub mod notifiers;
+pub mod os;
+
+use crate::colors::{C_RESET, RED};
+use crate::notifications::notifiers::BaseNotifier;
+use crate::notifications::os::OS;
 
 #[cfg(target_os = "linux")]
 use crate::notifications::notifiers::linux::{LinuxDBusNotifier, LinuxLibNotifyNotifier};
 #[cfg(target_os = "windows")]
 use crate::notifications::notifiers::windows::{WindowsLegacyNotifier, WindowsNotifier};
-use crate::notifications::notifiers::BaseNotifier;
 
-use crate::notifications::os::OS;
-
+/// Main notification structure that handles cross-platform notifications
+/// 
+/// # Examples
+/// 
+/// ```
+/// use stblib::notifications::Notifier;
+/// let notification = Notifier::new(
+///     "Title",
+///     "Message", 
+///     "App Name",
+///     "normal",
+///     "",
+///     None,
+///     false
+/// );
+/// notification.build().send()?;
+/// ```
+#[derive(Debug)]
 pub struct Notifier {
     pub title: String,
     pub message: String,
@@ -21,6 +39,8 @@ pub struct Notifier {
     pub internal_notifier: InternalNotifierObject,
 }
 
+/// Internal structure to handle OS-specific notification settings
+#[derive(Debug)]
 pub struct InternalNotifierObject {
     pub system: &'static OS,
     pub override_windows_version_detection: bool,
@@ -36,12 +56,23 @@ impl Default for Notifier {
             "normal".to_string(),
             "",
             None,
-            false
+            false,
         )
     }
 }
 
 impl Notifier {
+    /// Creates a new notification with the specified parameters
+    /// 
+    /// # Arguments
+    /// 
+    /// * `default_notification_title` - The title of the notification
+    /// * `default_notification_message` - The message content
+    /// * `default_notification_application_name` - The application name
+    /// * `default_notification_urgency` - Urgency level ("low", "normal", "critical")
+    /// * `default_notification_icon` - Path to the notification icon
+    /// * `default_notification_audio` - Optional audio file to play
+    /// * `enable_logging` - Enable debug logging
     #[must_use]
     pub fn new(
         default_notification_title: impl ToString,
@@ -63,11 +94,15 @@ impl Notifier {
             internal_notifier: InternalNotifierObject {
                 system: &OS::Undefined,
                 override_windows_version_detection: false,
-                override_windows_version: None
+                override_windows_version: None,
             },
         }
     }
 
+    /// Builds the notification by detecting the current operating system
+    /// 
+    /// This method determines the appropriate notification system based on
+    /// the current OS and version.
     pub fn build(mut self) -> Self {
         if self.internal_notifier.system == &OS::Undefined {
             self.internal_notifier.system = match std::env::consts::OS {
@@ -76,44 +111,82 @@ impl Notifier {
                     let version = os_info::get().version().to_string();
                     let version: Vec<&str> = version.split(".").collect();
                     let version = *version.first().unwrap();
-                    
+
                     if version == "10" || version == "11" {
                         &OS::Windows
-                    }
-                    else {
+                    } else {
                         &OS::WindowsLegacy
                     }
                 }
                 "macos" => &OS::MacOS,
-                _ => &OS::Unknown
+                _ => &OS::Unknown,
             }
         }
 
         self
     }
 
-    pub fn send(self,) -> bool {
+    /// Sends the notification using the appropriate system notifier
+    /// 
+    /// # Errors
+    /// 
+    /// Returns `NotificationError` if:
+    /// * The operating system is not supported
+    /// * The notification fails to send
+    pub fn send(self) -> Result<bool, NotificationError> {
+        if self.enable_logging {
+            println!("Sending notification");
+        }
+
         match self.internal_notifier.system {
             #[cfg(target_os = "linux")]
-            OS::Linux => LinuxDBusNotifier::new(self).notification_send(),
-
+            OS::Linux => Ok(LinuxDBusNotifier::new(self).notification_send()),
+            
             #[cfg(target_os = "linux")]
-            OS::LinuxLibNotify => LinuxLibNotifyNotifier::new(self).notification_send(),
-
+            OS::LinuxLibNotify => Ok(LinuxLibNotifyNotifier::new(self).notification_send()),
+            
             #[cfg(target_os = "windows")]
-            OS::Windows => WindowsNotifier::new(self).notification_send(),
-
+            OS::Windows => Ok(WindowsNotifier::new(self).notification_send()),
+            
             #[cfg(target_os = "windows")]
-            OS::WindowsLegacy => WindowsLegacyNotifier::new(self).notification_send(),
+            OS::WindowsLegacy => Ok(WindowsLegacyNotifier::new(self).notification_send()),
+            
+            OS::Undefined => {
+                let err = NotificationError::UndefinedOS;
+                if self.enable_logging {
+                    eprintln!("{RED}{}{C_RESET}", err);
+                }
+                Err(err)
+            }
             _ => {
-                eprintln!("Unsupported operating system");
-                std::process::exit(1);
+                let err = NotificationError::UnsupportedOS;
+                if self.enable_logging {
+                    eprintln!("{RED}{}{C_RESET}", err);
+                }
+                Err(err)
             }
         }
     }
 
+    /// Creates a custom notification from an existing configuration
+    /// 
+    /// # Arguments
+    /// 
+    /// * `notifier` - An existing Notifier instance to clone
     #[must_use]
     pub const fn custom(notifier: Self) -> Self {
         notifier
     }
+}
+
+/// Errors that can occur when sending notifications
+#[derive(Debug, thiserror::Error)]
+pub enum NotificationError {
+    #[error("Unsupported operating system")]
+    UnsupportedOS,
+    #[error("Undefined operating system. Please run `Notifier::build()` first")]
+    UndefinedOS,
+    #[error("Failed to send notification: {0}")]
+    SendError(String),
+    
 }
