@@ -48,7 +48,7 @@ pub struct FileStruct {
 }
 
 impl FileStruct {
-    /// Creates a new FileStruct instance that represents a file on the filesystem
+    /// Creates a new `FileStruct` instance that represents a file on the filesystem
     ///
     /// # Arguments
     ///
