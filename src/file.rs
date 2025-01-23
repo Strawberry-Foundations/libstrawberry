@@ -48,7 +48,7 @@ pub struct FileStruct {
 }
 
 impl FileStruct {
-    /// Creates a new FileStruct instance
+    /// Creates a new `FileStruct` instance
     #[must_use]
     pub fn new<P: AsRef<Path>>(file_path: P) -> Self {
         Self {
