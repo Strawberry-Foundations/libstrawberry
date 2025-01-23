@@ -72,14 +72,26 @@ impl FileStruct {
     /// # Returns
     ///
     /// * `Ok(String)` - The file contents as a string
-    /// * `Err(io::Error)` - If the file cannot be read
+    ///
+    /// # Errors
+    ///
+    /// Returns `io::Error` if:
+    /// * The file does not exist
+    /// * The process lacks permissions to read the file
+    /// * The file cannot be read due to system I/O errors
     ///
     /// # Example
     ///
     /// ```
+    /// use std::io;
     /// use stblib::file::FileStruct;
-    /// let file = FileStruct::new("example.txt");
-    /// let contents = file.read()?;
+    /// 
+    /// fn read_example() -> io::Result<()> {
+    ///     let file = FileStruct::new("example.txt");
+    ///     let contents = file.read()?;
+    ///     println!("File contents: {}", contents);
+    ///     Ok(())
+    /// }
     /// ```
     pub fn read(&self) -> io::Result<String> {
         read_file(&self.file_path)
@@ -94,14 +106,25 @@ impl FileStruct {
     /// # Returns
     ///
     /// * `Ok(())` - If the write was successful
-    /// * `Err(io::Error)` - If the file cannot be written
+    ///
+    /// # Errors
+    ///
+    /// Returns `io::Error` if:
+    /// * The file cannot be created
+    /// * The process lacks permissions to write to the file
+    /// * The file cannot be written due to system I/O errors
     ///
     /// # Example
     ///
     /// ```
+    /// use std::io;
     /// use stblib::file::FileStruct;
-    /// let file = FileStruct::new("example.txt");
-    /// file.write("Hello, World!")?;
+    /// 
+    /// fn write_example() -> io::Result<()> {
+    ///     let file = FileStruct::new("example.txt");
+    ///     file.write("Hello, World!")?;
+    ///     Ok(())
+    /// }
     /// ```
     pub fn write(&self, content: &str) -> io::Result<()> {
         write_to_file(&self.file_path, content)
