@@ -5,7 +5,6 @@ use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use chrono::prelude::*;
 use regex::Regex;
 
-
 /// Simplified version of `thread:sleep()` for waiting x seconds
 pub fn sleep(time: u64) {
     thread::sleep(Duration::from_secs(time));
@@ -65,4 +64,3 @@ pub fn contains_whitespace(string: &str) -> bool {
 pub fn is_empty_or_whitespace(string: &str) -> bool {
     string.chars().all(char::is_whitespace)
 }
-
