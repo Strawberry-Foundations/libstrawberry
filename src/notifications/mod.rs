@@ -23,7 +23,8 @@ use crate::notifications::notifiers::windows::{WindowsLegacyNotifier, WindowsNot
 ///     "normal",
 ///     "",
 ///     None,
-///     false
+///     5000,
+///     false,
 /// );
 /// notification.build().send()?;
 /// ```
@@ -35,8 +36,10 @@ pub struct Notifier {
     pub urgency: String,
     pub icon: String,
     pub audio: Option<String>,
+    pub timeout: i32,
     pub enable_logging: bool,
     pub internal_notifier: InternalNotifierObject,
+    pub actions: Vec<(String, String)>,
 }
 
 /// Internal structure to handle OS-specific notification settings
@@ -56,6 +59,7 @@ impl Default for Notifier {
             "normal".to_string(),
             "",
             None,
+            5000,
             false,
         )
     }
@@ -81,6 +85,7 @@ impl Notifier {
         default_notification_urgency: impl ToString,
         default_notification_icon: impl ToString,
         default_notification_audio: Option<String>,
+        default_timeout: i32,
         enable_logging: bool,
     ) -> Self {
         Self {
@@ -90,12 +95,14 @@ impl Notifier {
             urgency: default_notification_urgency.to_string(),
             icon: default_notification_icon.to_string(),
             audio: default_notification_audio,
+            timeout: default_timeout,
             enable_logging,
             internal_notifier: InternalNotifierObject {
                 system: &OS::Undefined,
                 override_windows_version_detection: false,
                 override_windows_version: None,
             },
+            actions: Vec::new(),
         }
     }
 
@@ -176,6 +183,67 @@ impl Notifier {
     #[must_use]
     pub const fn custom(notifier: Self) -> Self {
         notifier
+    }
+
+    /// Adds action buttons to the notification
+    /// 
+    /// # Arguments
+    /// 
+    /// * `actions` - Vector of (id, label) pairs for the buttons
+    /// 
+    /// # Example
+    /// 
+    /// ```
+    /// use stblib::notifications::Notifier;
+    /// let notifier = Notifier::default()
+    ///     .with_actions(vec![
+    ///         ("yes".to_string(), "Yes".to_string()),
+    ///         ("no".to_string(), "No".to_string())
+    ///     ]);
+    /// ```
+    pub fn with_actions(mut self, actions: Vec<(String, String)>) -> Self {
+        self.actions = actions;
+        self
+    }
+
+    /// Sends the notification with custom actions and waits for user response
+    /// 
+    /// # Returns
+    /// 
+    /// * `Ok(Some(String))` - The ID of the action that was clicked
+    /// * `Ok(None)` - Notification was closed without clicking any action
+    /// * `Err(NotificationError)` - If the notification fails
+    /// 
+    /// # Example
+    /// 
+    /// ```
+    /// use stblib::notifications::Notifier;
+    /// let notifier = Notifier::default()
+    ///     .with_actions(vec![
+    ///         ("yes".to_string(), "Yes".to_string()),
+    ///         ("no".to_string(), "No".to_string())
+    ///     ]);
+    /// let actions = vec![("yes".to_string(), "Yes".to_string()), ("no".to_string(), "No".to_string())];
+    /// match notifier.send_with_actions_and_wait(actions) {
+    ///     Ok(Some(action)) => println!("User clicked: {}", action),
+    ///     Ok(None) => println!("Notification was closed"),
+    ///     Err(e) => println!("Error: {:?}", e),
+    /// }
+    /// ```
+    pub fn send_with_actions_and_wait(self, actions: Vec<(String, String)>) -> Result<Option<String>, NotificationError> {
+        match self.internal_notifier.system {
+            #[cfg(target_os = "linux")]
+            OS::Linux => {
+                let dbus_notifier = LinuxDBusNotifier::new(self);
+                dbus_notifier.send_with_actions_and_wait(actions)
+                    .map_err(|e| NotificationError::SendError(e))
+            },
+            _ => {
+                // For other platforms, send normally and return None
+                self.send()?;
+                Ok(None)
+            }
+        }
     }
 }
 
