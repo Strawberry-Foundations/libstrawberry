@@ -23,14 +23,14 @@ impl FeatureSet {
     }
 
     /// Enable a feature
-    pub fn enable(&mut self, feature: &Features) {
+    pub const fn enable(&mut self, feature: &Features) {
         match feature {
             Features::FileHandler => self.enable_file_handler = true,
         }
     }
 
     /// Disable a feature
-    pub fn disable(&mut self, feature: &Features) {
+    pub const fn disable(&mut self, feature: &Features) {
         match feature {
             Features::FileHandler => self.enable_file_handler = false,
         }

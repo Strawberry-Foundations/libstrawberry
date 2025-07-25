@@ -71,7 +71,7 @@ impl StrawberryId {
             else {
                 return Ok(None)
             }
-        };
+        }
 
         Ok(Some(strawberry_id))
     }
