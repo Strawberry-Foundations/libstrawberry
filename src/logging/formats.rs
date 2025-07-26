@@ -1,4 +1,4 @@
-use crate::colors::{BLUE, BOLD, C_RESET, RED, YELLOW};
+use crate::colors::{BLUE, BOLD, C_RESET, RED, YELLOW, GRAY};
 
 /// Struct for creating a log format
 pub struct LogFormatOptions {
@@ -21,14 +21,14 @@ pub struct LogFormat {
 #[must_use]
 pub fn default_fmt() -> LogFormat {
     LogFormat {
-        info: format!("{C_RESET}{BOLD}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}    [%<message>%]"),
-        error: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET}   [%<message>%]"),
-        ok: format!("{C_RESET}{BOLD}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}   [%<message>%]"),
+        info: format!("{C_RESET}{BOLD}{GRAY}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}    [%<message>%]"),
+        error: format!("{C_RESET}{BOLD}{GRAY}[%<time>%] {RED}[%<levelname>%]{C_RESET}   [%<message>%]"),
+        ok: format!("{C_RESET}{BOLD}{GRAY}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}   [%<message>%]"),
         warning: format!(
-            "{C_RESET}{BOLD}[%<time>%] {YELLOW}[%<levelname>%]{C_RESET} [%<message>%]"
+            "{C_RESET}{BOLD}{GRAY}[%<time>%] {YELLOW}[%<levelname>%]{C_RESET} [%<message>%]"
         ),
-        critical: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET} [%<message>%]"),
-        panic: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET}   [%<message>%]"),
+        critical: format!("{C_RESET}{BOLD}{GRAY}[%<time>%] {RED}[%<levelname>%]{C_RESET} [%<message>%]"),
+        panic: format!("{C_RESET}{BOLD}{GRAY}[%<time>%] {RED}[%<levelname>%]{C_RESET}   [%<message>%]"),
         log_options: LogFormatOptions {
             timestamp_format: "%Y-%m-%d %H:%M".to_string(),
             levelname_lowercase: false,
