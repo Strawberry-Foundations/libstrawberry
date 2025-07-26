@@ -1,5 +1,5 @@
 /// Struct for creating a custom featureset for `stblib::logger`
-pub struct FeatureSet {
+pub struct LoggingFeatures {
     pub enable_file_handler: bool,
 }
 
@@ -7,13 +7,13 @@ pub enum Features {
     FileHandler,
 }
 
-impl Default for FeatureSet {
+impl Default for LoggingFeatures {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl FeatureSet {
+impl LoggingFeatures {
     /// Create a new featureset object
     #[must_use]
     pub const fn new() -> Self {
@@ -23,16 +23,20 @@ impl FeatureSet {
     }
 
     /// Enable a feature
-    pub const fn enable(&mut self, feature: &Features) {
-        match feature {
-            Features::FileHandler => self.enable_file_handler = true,
+    pub fn enable(&mut self, feature: &[Features]) {
+        for f in feature {
+            match f {
+                Features::FileHandler => self.enable_file_handler = true,
+            }
         }
     }
 
     /// Disable a feature
-    pub const fn disable(&mut self, feature: &Features) {
-        match feature {
-            Features::FileHandler => self.enable_file_handler = false,
+    pub fn disable(&mut self, feature: &[Features]) {
+        for f in feature {
+            match f {
+                Features::FileHandler => self.enable_file_handler = false,
+            }
         }
     }
 
