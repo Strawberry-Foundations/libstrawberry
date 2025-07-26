@@ -55,10 +55,10 @@ dbus = { version = "0.9.7", optional = true }
 winrt-notification = { version = "0.5.1", optional = true }
 
 [features]
-stbchat = ["dep:tokio", "dep:rmp-serde", "dep:socket2"]
+stbchat = ["dep:tokio", "dep:rmp-serde", "dep:socket2", "dep:serde", "dep:eyre", "dep:thiserror"]
 stbchat-sync = ["stbchat"]
 stbchat-scapi = ["stbchat"]
-notifications = ["dep:dbus", "dep:winrt-notification"]
+notifications = ["dep:dbus", "dep:winrt-notification", "dep:thiserror"]
 email = ["dep:lettre"]
 plugin = []
 strawberryid = ["dep:eyre", "dep:serde", "dep:thiserror", "dep:serde_json"]
