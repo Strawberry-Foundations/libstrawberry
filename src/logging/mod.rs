@@ -25,7 +25,7 @@ impl Logger {
     }
 
     /// Will parse some logging things >.>
-    fn loglevel_parser(&self, level: &LogLevel) -> String {
+    fn map_loglevel(&self, level: &LogLevel) -> String {
         let level_str = match level {
             LogLevel::OK => "OK",
             LogLevel::INFO => "INFO",
@@ -35,7 +35,7 @@ impl Logger {
             LogLevel::PANIC => "PANIC",
         };
 
-        if self.formatting.extensions.levelname_lowercase {
+        if self.formatting.log_options.levelname_lowercase {
             level_str.to_lowercase()
         } else {
             String::from(level_str)
@@ -45,12 +45,12 @@ impl Logger {
     /// Will parse various placeholders that can be used by custom logging formats
     fn parse(&self, level: &LogLevel, content: &impl ToString) -> String {
         let (template, level_str) = match level {
-            LogLevel::OK => (&self.formatting.ok, self.loglevel_parser(level)),
-            LogLevel::INFO => (&self.formatting.info, self.loglevel_parser(level)),
-            LogLevel::ERROR => (&self.formatting.error, self.loglevel_parser(level)),
-            LogLevel::WARNING => (&self.formatting.warning, self.loglevel_parser(level)),
-            LogLevel::CRITICAL => (&self.formatting.critical, self.loglevel_parser(level)),
-            LogLevel::PANIC => (&self.formatting.panic, self.loglevel_parser(level)),
+            LogLevel::OK => (&self.formatting.ok, self.map_loglevel(level)),
+            LogLevel::INFO => (&self.formatting.info, self.map_loglevel(level)),
+            LogLevel::ERROR => (&self.formatting.error, self.map_loglevel(level)),
+            LogLevel::WARNING => (&self.formatting.warning, self.map_loglevel(level)),
+            LogLevel::CRITICAL => (&self.formatting.critical, self.map_loglevel(level)),
+            LogLevel::PANIC => (&self.formatting.panic, self.map_loglevel(level)),
         };
 
         template
@@ -58,7 +58,7 @@ impl Logger {
             .replace("[%<message>%]", &content.to_string())
             .replace(
                 "[%<time>%]",
-                current_time(&self.formatting.extensions.time_fmt).as_str(),
+                current_time(&self.formatting.log_options.timestamp_format).as_str(),
             )
     }
 
