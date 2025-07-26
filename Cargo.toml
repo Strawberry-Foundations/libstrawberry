@@ -1,6 +1,6 @@
 [package]
 name = "stblib"
-version = "0.7.2"
+version = "0.7.3"
 edition = "2024"
 authors = ["Juliandev02 <julian@strawberryfoundations.org>", "Paddyk45", "matteodev8"]
 description = "stblib is a simple library that takes over and simplifies important and useful tasks."
