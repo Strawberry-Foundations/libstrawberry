@@ -1,12 +1,22 @@
 [package]
-name = "stblib"
-version = "0.7.3"
+name = "libstrawberry"
+version = "1.0.0"
 edition = "2024"
-authors = ["Juliandev02 <julian@strawberryfoundations.org>", "Paddyk45", "matteodev8"]
-description = "stblib is a simple library that takes over and simplifies important and useful tasks."
+authors = [
+    "Juliandev02 <julian@strawberryfoundations.org>",
+    "matteodev8 <me@matteodev.xyz>",
+    "Paddyk45",
+]
+description = "libstrawberry is a simple library that takes over and simplifies important and useful tasks."
 license = "AGPL-3.0-only"
-repository = "https://github.com/Strawberry-Foundations/stblib-rust"
-keywords = ["notifications", "strawberry-chat", "network", "colors", "localization"]
+repository = "https://github.com/Strawberry-Foundations/libstrawberry"
+keywords = [
+    "notifications",
+    "network",
+    "colors",
+    "localization",
+    "logging"
+]
 categories = ["localization", "network-programming"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -21,10 +31,10 @@ targets = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"]
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.141"
 serde_yaml = "0.9.34"
-rmp-serde = { version = "1.3.0", optional = true}
+rmp-serde = { version = "1.3.0", optional = true }
 
 tokio = { version = "1.46.1", optional = true, features = ["rt", "rt-multi-thread", "macros"] }
-socket2 = { version = "0.6.0", optional = true}
+socket2 = { version = "0.6.0", optional = true }
 reqwest = { version = "0.12.22", features = ["blocking"] }
 
 chrono = "0.4.41"
@@ -39,7 +49,6 @@ thiserror = "2.0.12"
 eyre = "0.6.12"
 
 [target.'cfg(unix)'.dependencies]
-# dbus = { version = "0.6.5", optional = true }
 dbus = { version = "0.9.7", optional = true }
 
 [target.'cfg(windows)'.dependencies]
