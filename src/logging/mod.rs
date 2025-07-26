@@ -44,67 +44,22 @@ impl Logger {
 
     /// Will parse various placeholders that can be used by custom logging formats
     fn parse(&self, level: &LogLevel, content: &impl ToString) -> String {
-        match level {
-            LogLevel::OK => self
-                .formatting
-                .ok
-                .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                .replace("[%<message>%]", &content.to_string())
-                .replace(
-                    "[%<time>%]",
-                    current_time(&self.formatting.extensions.time_fmt).as_str(),
-                ),
+        let (template, level_str) = match level {
+            LogLevel::OK => (&self.formatting.ok, self.loglevel_parser(level)),
+            LogLevel::INFO => (&self.formatting.info, self.loglevel_parser(level)),
+            LogLevel::ERROR => (&self.formatting.error, self.loglevel_parser(level)),
+            LogLevel::WARNING => (&self.formatting.warning, self.loglevel_parser(level)),
+            LogLevel::CRITICAL => (&self.formatting.critical, self.loglevel_parser(level)),
+            LogLevel::PANIC => (&self.formatting.panic, self.loglevel_parser(level)),
+        };
 
-            LogLevel::INFO => self
-                .formatting
-                .info
-                .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                .replace("[%<message>%]", &content.to_string())
-                .replace(
-                    "[%<time>%]",
-                    current_time(&self.formatting.extensions.time_fmt).as_str(),
-                ),
-
-            LogLevel::ERROR => self
-                .formatting
-                .error
-                .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                .replace("[%<message>%]", &content.to_string())
-                .replace(
-                    "[%<time>%]",
-                    current_time(&self.formatting.extensions.time_fmt).as_str(),
-                ),
-
-            LogLevel::WARNING => self
-                .formatting
-                .warning
-                .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                .replace("[%<message>%]", &content.to_string())
-                .replace(
-                    "[%<time>%]",
-                    current_time(&self.formatting.extensions.time_fmt).as_str(),
-                ),
-
-            LogLevel::CRITICAL => self
-                .formatting
-                .critical
-                .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                .replace("[%<message>%]", &content.to_string())
-                .replace(
-                    "[%<time>%]",
-                    current_time(&self.formatting.extensions.time_fmt).as_str(),
-                ),
-
-            LogLevel::PANIC => self
-                .formatting
-                .panic
-                .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                .replace("[%<message>%]", &content.to_string())
-                .replace(
-                    "[%<time>%]",
-                    current_time(&self.formatting.extensions.time_fmt).as_str(),
-                ),
-        }
+        template
+            .replace("[%<levelname>%]", &level_str)
+            .replace("[%<message>%]", &content.to_string())
+            .replace(
+                "[%<time>%]",
+                current_time(&self.formatting.extensions.time_fmt).as_str(),
+            )
     }
 
     /// Default log function
