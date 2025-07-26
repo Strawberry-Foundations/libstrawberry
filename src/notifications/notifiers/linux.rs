@@ -85,8 +85,7 @@ impl BaseNotifier for LinuxDBusNotifier {
             Duration::from_millis(5000),
         );
 
-        // Action buttons: pairs of (key, display_text)
-        let actions = vec!["default", "OK", "cancel", "Cancel"];
+        let actions: Vec<String> = Vec::new();
 
         let (id,): (u32,) = match proxy.method_call(
             "org.freedesktop.Notifications",
