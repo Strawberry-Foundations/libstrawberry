@@ -1,8 +1,8 @@
 use crate::colors::{BLUE, BOLD, C_RESET, RED, YELLOW};
 
 /// Struct for creating a log format
-pub struct LogFormatExt {
-    pub time_fmt: String,
+pub struct LogFormatOptions {
+    pub timestamp_format: String,
     pub levelname_lowercase: bool,
 }
 
@@ -14,7 +14,7 @@ pub struct LogFormat {
     pub warning: String,
     pub critical: String,
     pub panic: String,
-    pub extensions: LogFormatExt,
+    pub log_options: LogFormatOptions,
 }
 
 /// Default log format, used by Strawberry Chat
@@ -29,8 +29,8 @@ pub fn default_fmt() -> LogFormat {
         ),
         critical: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET} [%<message>%]"),
         panic: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET}   [%<message>%]"),
-        extensions: LogFormatExt {
-            time_fmt: "%Y-%m-%d %H:%M".to_string(),
+        log_options: LogFormatOptions {
+            timestamp_format: "%Y-%m-%d %H:%M".to_string(),
             levelname_lowercase: false,
         },
     }
@@ -46,8 +46,8 @@ pub fn basic_fmt() -> LogFormat {
         warning: format!("[%<levelname>%]: [%<message>%]"),
         critical: format!("[%<levelname>%]: [%<message>%]"),
         panic: format!("[%<levelname>%]: [%<message>%]"),
-        extensions: LogFormatExt {
-            time_fmt: "".to_string(),
+        log_options: LogFormatOptions {
+            timestamp_format: "".to_string(),
             levelname_lowercase: false,
         },
     }
