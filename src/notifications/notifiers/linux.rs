@@ -156,7 +156,9 @@ impl LinuxDBusNotifier {
             ),
         ).map_err(|e| format!("Failed to send notification: {}", e))?;
 
-        println!("Notification sent with ID: {}", notification_id);
+        if self.notifier.enable_logging {
+            eprintln!("Notification sent with ID: {}", notification_id);
+        }
 
         let result = Arc::new(Mutex::new(None::<String>));
         let result_clone = Arc::clone(&result);
@@ -167,33 +169,43 @@ impl LinuxDBusNotifier {
 
         let _token1 = conn_clone.add_match(
             dbus::message::MatchRule::new_signal("org.freedesktop.Notifications", "ActionInvoked"),
-            move |_: (), _, msg| {
-                if let Ok((nid, action_key)) = msg.read2::<u32, String>() {
-                    if nid == notification_id {
-                        println!("Action '{}' invoked on notification {}", action_key, nid);
-                        if let Ok(mut result_guard) = result_clone.lock() {
-                            *result_guard = Some(action_key);
+            {
+                let enable_logging = self.notifier.enable_logging;
+                move |_: (), _, msg| {
+                    if let Ok((nid, action_key)) = msg.read2::<u32, String>() {
+                        if nid == notification_id {
+                            if enable_logging {
+                                eprintln!("Action '{}' invoked on notification {}", action_key, nid);
+                            }
+                            if let Ok(mut result_guard) = result_clone.lock() {
+                                *result_guard = Some(action_key);
+                            }
                         }
                     }
+                    true
                 }
-                true
             },
         ).map_err(|e| format!("Failed to add ActionInvoked match rule: {}", e))?;
 
         let _token2 = conn_clone.add_match(
             dbus::message::MatchRule::new_signal("org.freedesktop.Notifications", "NotificationClosed"),
-            move |_: (), _, msg| {
-                if let Ok((nid, reason)) = msg.read2::<u32, u32>() {
-                    if nid == notification_id {
-                        println!("Notification {} closed (reason: {})", nid, reason);
-                        if let Ok(mut result_guard) = result_clone2.lock() {
-                            if result_guard.is_none() {
-                                *result_guard = Some("__CLOSED__".to_string());
+            {
+                let enable_logging = self.notifier.enable_logging;
+                move |_: (), _, msg| {
+                    if let Ok((nid, reason)) = msg.read2::<u32, u32>() {
+                        if nid == notification_id {
+                            if enable_logging {
+                                eprintln!("Notification {} closed (reason: {})", nid, reason);
+                            }
+                            if let Ok(mut result_guard) = result_clone2.lock() {
+                                if result_guard.is_none() {
+                                    *result_guard = Some("__CLOSED__".to_string());
+                                }
                             }
                         }
                     }
+                    true
                 }
-                true
             },
         ).map_err(|e| format!("Failed to add NotificationClosed match rule: {}", e))?;
 
@@ -202,7 +214,9 @@ impl LinuxDBusNotifier {
 
         while start_time.elapsed() < timeout_duration {
             if let Err(e) = conn_clone.process(Duration::from_millis(100)) {
-                println!("Error processing D-Bus messages: {}", e);
+                if self.notifier.enable_logging {
+                    eprintln!("Error processing D-Bus messages: {}", e);
+                }
             }
 
             if let Ok(result_guard) = result.lock() {
