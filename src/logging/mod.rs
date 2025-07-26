@@ -27,7 +27,7 @@ impl Logger {
     /// Will parse some logging things >.>
     fn loglevel_parser(&self, level: &LogLevel) -> String {
         let level_str = match level {
-            LogLevel::DEFAULT => "DEFAULT",
+            LogLevel::OK => "OK",
             LogLevel::INFO => "INFO",
             LogLevel::ERROR => "ERROR",
             LogLevel::WARNING => "WARNING",
@@ -45,9 +45,9 @@ impl Logger {
     /// Will parse various placeholders that can be used by custom logging formats
     fn parse(&self, level: &LogLevel, content: &impl ToString) -> String {
         match level {
-            LogLevel::DEFAULT => self
+            LogLevel::OK => self
                 .formatting
-                .default
+                .ok
                 .replace("[%<levelname>%]", &self.loglevel_parser(level))
                 .replace("[%<message>%]", &content.to_string())
                 .replace(
@@ -108,8 +108,8 @@ impl Logger {
     }
 
     /// Default log function
-    pub fn default(&self, log_message: impl Display) {
-        println!("{}", self.parse(&LogLevel::DEFAULT, &log_message));
+    pub fn ok(&self, log_message: impl Display) {
+        println!("{}", self.parse(&LogLevel::OK, &log_message));
     }
 
     /// Info log function
@@ -153,5 +153,16 @@ impl Logger {
     pub fn panic_crash(&self, log_message: impl Display) -> ! {
         println!("{}", self.parse(&LogLevel::PANIC, &log_message));
         std::process::exit(1);
+    }
+}
+
+impl Default for Logger {
+    fn default() -> Self {
+        Logger {
+            feat_set: FeatureSet {
+                enable_file_handler: false,
+            },
+            formatting: formats::default_fmt(),
+        }
     }
 }

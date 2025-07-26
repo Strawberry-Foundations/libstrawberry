@@ -10,7 +10,7 @@ pub struct LogFormatExt {
 pub struct LogFormat {
     pub info: String,
     pub error: String,
-    pub default: String,
+    pub ok: String,
     pub warning: String,
     pub critical: String,
     pub panic: String,
@@ -23,9 +23,7 @@ pub fn default_fmt() -> LogFormat {
     LogFormat {
         info: format!("{C_RESET}{BOLD}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}    [%<message>%]"),
         error: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET}   [%<message>%]"),
-        default: format!(
-            "{C_RESET}{BOLD}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}   [%<message>%]"
-        ),
+        ok: format!("{C_RESET}{BOLD}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}   [%<message>%]"),
         warning: format!(
             "{C_RESET}{BOLD}[%<time>%] {YELLOW}[%<levelname>%]{C_RESET} [%<message>%]"
         ),
@@ -44,7 +42,7 @@ pub fn basic_fmt() -> LogFormat {
     LogFormat {
         info: format!("[%<levelname>%]: [%<message>%]"),
         error: format!("[%<levelname>%]: [%<message>%]"),
-        default: format!("[%<levelname>%]: [%<message>%]"),
+        ok: format!("[%<levelname>%]: [%<message>%]"),
         warning: format!("[%<levelname>%]: [%<message>%]"),
         critical: format!("[%<levelname>%]: [%<message>%]"),
         panic: format!("[%<levelname>%]: [%<message>%]"),
