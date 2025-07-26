@@ -14,7 +14,7 @@ pub struct LogFormat {
     pub warning: String,
     pub critical: String,
     pub panic: String,
-    pub extensions: LogFormatExt
+    pub extensions: LogFormatExt,
 }
 
 /// Pre-defined log format used by Strawberry Chat
@@ -23,13 +23,17 @@ pub fn strawberry_chat_fmt() -> LogFormat {
     LogFormat {
         info: format!("{C_RESET}{BOLD}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}    [%<message>%]"),
         error: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET}   [%<message>%]"),
-        default: format!("{C_RESET}{BOLD}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}   [%<message>%]"),
-        warning: format!("{C_RESET}{BOLD}[%<time>%] {YELLOW}[%<levelname>%]{C_RESET} [%<message>%]"),
+        default: format!(
+            "{C_RESET}{BOLD}[%<time>%] {BLUE}[%<levelname>%]{C_RESET}   [%<message>%]"
+        ),
+        warning: format!(
+            "{C_RESET}{BOLD}[%<time>%] {YELLOW}[%<levelname>%]{C_RESET} [%<message>%]"
+        ),
         critical: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET} [%<message>%]"),
         panic: format!("{C_RESET}{BOLD}[%<time>%] {RED}[%<levelname>%]{C_RESET}   [%<message>%]"),
         extensions: LogFormatExt {
             time_fmt: "%Y-%m-%d %H:%M".to_string(),
-            levelname_lowercase: false
+            levelname_lowercase: false,
         },
     }
 }

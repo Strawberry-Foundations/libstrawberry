@@ -2,13 +2,13 @@ pub mod featureset;
 pub mod formats;
 pub mod level;
 
-use std::fmt::Display;
-use crate::logging::formats::LogFormat;
 use crate::logging::featureset::FeatureSet;
-use crate::utilities::current_time;
+use crate::logging::formats::LogFormat;
 use crate::logging::level::LogLevel;
+use crate::time::current_time;
+use std::fmt::Display;
 
-/// A simple console logger struct with custom formatting and more 
+/// A simple console logger struct with custom formatting and more
 pub struct Logger {
     pub feat_set: FeatureSet,
     pub formatting: LogFormat,
@@ -20,7 +20,7 @@ impl Logger {
     pub const fn new(feature_set: FeatureSet, formatter: LogFormat) -> Self {
         Self {
             feat_set: feature_set,
-            formatting: formatter
+            formatting: formatter,
         }
     }
 
@@ -45,47 +45,65 @@ impl Logger {
     /// Will parse various placeholders that can be used by custom logging formats
     fn parse(&self, level: &LogLevel, content: &impl ToString) -> String {
         match level {
-            LogLevel::DEFAULT => {
-                self.formatting.default
-                    .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                    .replace("[%<message>%]", &content.to_string())
-                    .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
-            },
+            LogLevel::DEFAULT => self
+                .formatting
+                .default
+                .replace("[%<levelname>%]", &self.loglevel_parser(level))
+                .replace("[%<message>%]", &content.to_string())
+                .replace(
+                    "[%<time>%]",
+                    current_time(&self.formatting.extensions.time_fmt).as_str(),
+                ),
 
-            LogLevel::INFO => {
-                self.formatting.info
-                    .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                    .replace("[%<message>%]", &content.to_string())
-                    .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
-            },
+            LogLevel::INFO => self
+                .formatting
+                .info
+                .replace("[%<levelname>%]", &self.loglevel_parser(level))
+                .replace("[%<message>%]", &content.to_string())
+                .replace(
+                    "[%<time>%]",
+                    current_time(&self.formatting.extensions.time_fmt).as_str(),
+                ),
 
-            LogLevel::ERROR => {
-                self.formatting.error
-                    .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                    .replace("[%<message>%]", &content.to_string())
-                    .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
-            },
+            LogLevel::ERROR => self
+                .formatting
+                .error
+                .replace("[%<levelname>%]", &self.loglevel_parser(level))
+                .replace("[%<message>%]", &content.to_string())
+                .replace(
+                    "[%<time>%]",
+                    current_time(&self.formatting.extensions.time_fmt).as_str(),
+                ),
 
-            LogLevel::WARNING => {
-                self.formatting.warning
-                    .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                    .replace("[%<message>%]", &content.to_string())
-                    .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
-            },
+            LogLevel::WARNING => self
+                .formatting
+                .warning
+                .replace("[%<levelname>%]", &self.loglevel_parser(level))
+                .replace("[%<message>%]", &content.to_string())
+                .replace(
+                    "[%<time>%]",
+                    current_time(&self.formatting.extensions.time_fmt).as_str(),
+                ),
 
-            LogLevel::CRITICAL => {
-                self.formatting.critical
-                    .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                    .replace("[%<message>%]", &content.to_string())
-                    .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
-            },
+            LogLevel::CRITICAL => self
+                .formatting
+                .critical
+                .replace("[%<levelname>%]", &self.loglevel_parser(level))
+                .replace("[%<message>%]", &content.to_string())
+                .replace(
+                    "[%<time>%]",
+                    current_time(&self.formatting.extensions.time_fmt).as_str(),
+                ),
 
-            LogLevel::PANIC => {
-                self.formatting.panic
-                    .replace("[%<levelname>%]", &self.loglevel_parser(level))
-                    .replace("[%<message>%]", &content.to_string())
-                    .replace("[%<time>%]", current_time(&self.formatting.extensions.time_fmt).as_str())
-            },
+            LogLevel::PANIC => self
+                .formatting
+                .panic
+                .replace("[%<levelname>%]", &self.loglevel_parser(level))
+                .replace("[%<message>%]", &content.to_string())
+                .replace(
+                    "[%<time>%]",
+                    current_time(&self.formatting.extensions.time_fmt).as_str(),
+                ),
         }
     }
 
@@ -93,7 +111,7 @@ impl Logger {
     pub fn default(&self, log_message: impl Display) {
         println!("{}", self.parse(&LogLevel::DEFAULT, &log_message));
     }
-    
+
     /// Info log function
     pub fn info(&self, log_message: impl Display) {
         println!("{}", self.parse(&LogLevel::INFO, &log_message));
@@ -108,7 +126,7 @@ impl Logger {
     pub fn warning(&self, log_message: impl Display) {
         println!("{}", self.parse(&LogLevel::WARNING, &log_message));
     }
-    
+
     /// Critical log function
     pub fn critical(&self, log_message: impl Display) {
         println!("{}", self.parse(&LogLevel::CRITICAL, &log_message));

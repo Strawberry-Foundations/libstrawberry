@@ -1,8 +1,8 @@
-#[must_use] pub fn badge_handler(badge: &str) -> Option<String> {
+#[must_use]
+pub fn badge_handler(badge: &str) -> Option<String> {
     if badge.is_empty() {
         None
-    }
-    else {
+    } else {
         Some(format!(" [{badge}]"))
     }
 }

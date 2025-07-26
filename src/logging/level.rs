@@ -4,5 +4,5 @@ pub enum LogLevel {
     ERROR,
     WARNING,
     CRITICAL,
-    PANIC
+    PANIC,
 }

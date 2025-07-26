@@ -10,5 +10,5 @@ pub enum Content {
     #[default]
     Default,
     Plain(&'static str),
-    Html(&'static str)
+    Html(&'static str),
 }

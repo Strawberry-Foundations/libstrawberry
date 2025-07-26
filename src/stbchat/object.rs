@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Default, Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct User {
@@ -25,11 +25,7 @@ pub enum StbchatApiResponse {
         badge: String,
     },
     #[serde(rename = "user_left")]
-    UserLeft {
-        username: String,
-    },
+    UserLeft { username: String },
     #[serde(rename = "user_data")]
-    UserData {
-        data: User,
-    },
+    UserData { data: User },
 }

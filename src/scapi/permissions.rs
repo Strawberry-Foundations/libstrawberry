@@ -3,7 +3,7 @@ pub enum PermissionLevel {
     All,
     Trusted,
     Admin,
-    Owner
+    Owner,
 }
 
 pub struct PermissionList {

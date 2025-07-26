@@ -1,8 +1,7 @@
-use std::fs;
+use crate::id::error::CredentialsError;
 use eyre::Error;
 use serde::{Deserialize, Serialize};
-
-use crate::id::error::CredentialsError;
+use std::fs;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct StrawberryIdCredentials {
@@ -46,7 +45,7 @@ impl StrawberryIdCredentials {
 
             if !config_dir.exists() {
                 if let Err(err) = fs::create_dir_all(&config_dir) {
-                    return Err(CredentialsError::DirectoryCreationError(err.to_string()).into())
+                    return Err(CredentialsError::DirectoryCreationError(err.to_string()).into());
                 }
             }
 
@@ -56,15 +55,14 @@ impl StrawberryIdCredentials {
                 return match serde_yaml::to_string(&credentials) {
                     Ok(credentials_str) => {
                         if let Err(err) = fs::write(&credentials_path, credentials_str) {
-                            return Err(CredentialsError::WriteError(err.to_string()).into())
+                            return Err(CredentialsError::WriteError(err.to_string()).into());
                         }
                         Ok(())
                     }
                     Err(err) => Err(CredentialsError::SerializeError(err.to_string()).into()),
-                }
+                };
             }
-            return Err(CredentialsError::AlreadyExists(credentials_path).into())
-
+            return Err(CredentialsError::AlreadyExists(credentials_path).into());
         }
         Err(CredentialsError::HomeNotFound.into())
     }

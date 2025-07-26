@@ -1,9 +1,9 @@
-/// # stblib-external Plugin Feature
+/// # libstrawberry-external Plugin Feature
 /// Plugins are extensions for any program that add functionality
 /// for certain other things that improve your program.
 /// Plugins can be programmed by the open source community in Rust
 /// ```
-/// use stblib::external::plugin::{Plugin, PluginProperties};
+/// use libstrawberry::external::plugin::{Plugin, PluginProperties};
 /// pub struct ExamplePlugin;
 ///
 /// impl Plugin for ExamplePlugin {
@@ -29,7 +29,7 @@
 ///         id: "example-plugin",
 ///         package_id: "com.example.exampleplugin",
 ///         version: env!("CARGO_PKG_VERSION"),
-///         library_version: stblib::VERSION,
+///         library_version: libstrawberry::VERSION,
 ///     };
 ///
 ///     (Box::new(ExamplePlugin), properties)

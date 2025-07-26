@@ -7,7 +7,7 @@ use std::path::Path;
 /// # Examples
 ///
 /// ```
-/// use stblib::file::read_file;
+/// use libstrawberry::file::read_file;
 /// let content = read_file("example.txt")?;
 /// ```
 ///
@@ -28,7 +28,7 @@ pub fn read_file<P: AsRef<Path>>(file_path: P) -> io::Result<String> {
 /// # Examples
 ///
 /// ```
-/// use stblib::file::write_to_file;
+/// use libstrawberry::file::write_to_file;
 /// write_to_file("example.txt", "Hello World!")?;
 /// ```
 ///
@@ -43,12 +43,12 @@ pub fn write_to_file<P: AsRef<Path>>(file_path: P, content: &str) -> io::Result<
 }
 
 #[derive(Debug, Clone)]
-pub struct FileStruct {
+pub struct PersistentFile {
     file_path: String,
 }
 
-impl FileStruct {
-    /// Creates a new `FileStruct` instance that represents a file on the filesystem
+impl PersistentFile {
+    /// Creates a new `PersistentFile` instance that represents a file on the filesystem
     ///
     /// # Arguments
     ///
@@ -57,8 +57,8 @@ impl FileStruct {
     /// # Example
     ///
     /// ```
-    /// use stblib::file::FileStruct;
-    /// let file = FileStruct::new("example.txt");
+    /// use libstrawberry::file::PersistentFile;
+    /// let file = PersistentFile::new("example.txt");
     /// ```
     #[must_use]
     pub fn new<P: AsRef<Path>>(file_path: P) -> Self {
@@ -84,10 +84,10 @@ impl FileStruct {
     ///
     /// ```
     /// use std::io;
-    /// use stblib::file::FileStruct;
-    /// 
+    /// use libstrawberry::file::PersistentFile;
+    ///
     /// fn read_example() -> io::Result<()> {
-    ///     let file = FileStruct::new("example.txt");
+    ///     let file = PersistentFile::new("example.txt");
     ///     let contents = file.read()?;
     ///     println!("File contents: {}", contents);
     ///     Ok(())
@@ -118,10 +118,10 @@ impl FileStruct {
     ///
     /// ```
     /// use std::io;
-    /// use stblib::file::FileStruct;
-    /// 
+    /// use libstrawberry::file::PersistentFile;
+    ///
     /// fn write_example() -> io::Result<()> {
-    ///     let file = FileStruct::new("example.txt");
+    ///     let file = PersistentFile::new("example.txt");
     ///     file.write("Hello, World!")?;
     ///     Ok(())
     /// }

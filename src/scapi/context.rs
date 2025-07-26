@@ -1,7 +1,7 @@
-use tokio::io::WriteHalf;
-use tokio::net::TcpStream;
 use crate::stbchat::net::OutgoingPacketStream;
 use crate::stbchat::packet::ServerPacket;
+use tokio::io::WriteHalf;
+use tokio::net::TcpStream;
 
 pub struct Context {
     /// The user who executed the command
@@ -20,11 +20,13 @@ pub struct Channel {
 
 impl Channel {
     /// # Panics
-    /// 
+    ///
     pub async fn send(&mut self, message: impl ToString) {
-        self.w_server.write(
-            ServerPacket::Message {
-                message: message.to_string()
-            }).await.expect("Err");
+        self.w_server
+            .write(ServerPacket::Message {
+                message: message.to_string(),
+            })
+            .await
+            .expect("Err");
     }
 }

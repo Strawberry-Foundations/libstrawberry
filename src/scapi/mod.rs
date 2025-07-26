@@ -1,30 +1,28 @@
 #![cfg(feature = "stbchat")]
 #![allow(clippy::future_not_send)]
+use tokio::io::{ReadHalf, WriteHalf, split};
 /// TODO: Use built-in logging from stblib
-
-
 use tokio::net::TcpStream;
-use tokio::io::{ReadHalf, split, WriteHalf};
 
+use num_traits::ToPrimitive;
 use std::fmt::{Display, Formatter};
 use std::string::ToString;
 use std::time::Duration;
-use num_traits::ToPrimitive;
 
 pub mod addons;
 pub mod command;
+pub mod context;
 pub mod flags;
 pub mod permissions;
-pub mod context;
 
-use crate::colors::{BLUE, BOLD, CYAN, C_RESET, GREEN, RED, YELLOW};
+use crate::colors::{BLUE, BOLD, C_RESET, CYAN, GREEN, RED, YELLOW};
 use crate::scapi::command::Command;
 use crate::scapi::context::{Channel, Context};
 use crate::scapi::flags::BotFlags;
 use crate::scapi::permissions::PermissionList;
 use crate::stbchat::net::{IncomingPacketStream, OutgoingPacketStream};
 use crate::stbchat::packet::{ClientPacket, ServerPacket};
-use crate::utilities::current_time;
+use crate::time::current_time;
 
 const VERSION: &str = "1.0.0";
 const FULL_VERSION: &str = "_dev-vacakes-stblib::rs_stbmv3";
@@ -38,7 +36,7 @@ pub struct Bot {
     pub address: String,
     pub port: u16,
     pub prefix: String,
-    
+
     pub r_server: Option<IncomingPacketStream<ReadHalf<TcpStream>>>,
     pub w_server: Option<OutgoingPacketStream<WriteHalf<TcpStream>>>,
 }
@@ -50,7 +48,6 @@ impl Bot {
         address: impl ToString,
         port: usize,
         prefix: impl ToString,
-        
     ) -> Self {
         let bot = Self {
             username: username.to_string(),
@@ -61,10 +58,10 @@ impl Bot {
             r_server: None,
             w_server: None,
         };
-        
+
         bot
     }
-    
+
     pub async fn run(mut self) {
         let host = format!("{}:{}", self.address, self.port);
         let stream = TcpStream::connect(host).await.unwrap();
@@ -80,7 +77,7 @@ impl Bot {
 
         let r_server = IncomingPacketStream::wrap(r_server);
         let w_server = OutgoingPacketStream::wrap(w_server);
-        
+
         self.r_server = self.r_server;
         self.w_server = self.w_server;
     }

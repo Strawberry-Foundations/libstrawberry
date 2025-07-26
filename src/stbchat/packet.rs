@@ -1,7 +1,7 @@
 #![allow(clippy::future_not_send, clippy::needless_pass_by_value)]
 
-use serde::{Deserialize, Serialize};
 use crate::stbchat::object::{StbchatApiResponse, User, UserMeta};
+use serde::{Deserialize, Serialize};
 
 /// # A packet sent from the server to the client (Server -> Client)
 /// - `SystemMessage`: A message sent from the system
@@ -12,14 +12,9 @@ use crate::stbchat::object::{StbchatApiResponse, User, UserMeta};
 #[serde(tag = "packet_type")]
 pub enum ClientPacket {
     #[serde(rename = "system_message")]
-    SystemMessage {
-        message: String
-    },
+    SystemMessage { message: String },
     #[serde(rename = "user_message")]
-    UserMessage {
-        author: User,
-        message: String,
-    },
+    UserMessage { author: User, message: String },
     #[serde(rename = "notification_backend")]
     Notification {
         title: String,
@@ -29,20 +24,15 @@ pub enum ClientPacket {
         bell: bool,
     },
     #[serde(rename = "stbchat_event")]
-    Event {
-        event_type: String,
-    },
+    Event { event_type: String },
     #[serde(rename = "stbchat_backend")]
-    Backend {
-        user_meta: UserMeta
-    },
+    Backend { user_meta: UserMeta },
     #[serde(rename = "stbchat_api")]
     ApiResponse {
         response_type: String,
-        response: StbchatApiResponse
-    }
+        response: StbchatApiResponse,
+    },
 }
-
 
 /// # A packet sent from the client to the server (Client -> Server)
 /// - `Login`: A event packet for receiving the users credentials
@@ -52,7 +42,7 @@ pub enum ClientPacket {
 pub enum ServerPacket {
     Login {
         username: String,
-        password: String
+        password: String,
     },
     Register {
         username: String,
@@ -60,10 +50,10 @@ pub enum ServerPacket {
         role_color: String,
     },
     Message {
-        message: String
+        message: String,
     },
     ApiRequest {
-        request_type: String
+        request_type: String,
     },
-    KeepAlive
+    KeepAlive,
 }

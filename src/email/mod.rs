@@ -1,18 +1,17 @@
 #![cfg(feature = "email")]
-
 #![allow(clippy::needless_pass_by_value)]
 
-use lettre::{Message, Transport};
+use lettre::message::header::ContentType as ContentTypeLettre;
 use lettre::transport::smtp::Error;
 use lettre::transport::smtp::response::Response;
-use lettre::message::header::ContentType as ContentTypeLettre;
+use lettre::{Message, Transport};
 
-use crate::email::message::{ContentType, Content};
+use crate::email::message::{Content, ContentType};
 use crate::email::server::Server;
 
-pub mod server;
-pub mod message;
 pub mod credentials;
+pub mod message;
+pub mod server;
 
 #[derive(Default)]
 pub struct Email {
@@ -65,10 +64,10 @@ impl Email {
     pub fn send(self, server: Server) -> Result<Response, Error> {
         let content_type = match self.body_type {
             ContentType::PLAIN => ContentTypeLettre::TEXT_PLAIN,
-            ContentType::HTML => ContentTypeLettre::TEXT_HTML
+            ContentType::HTML => ContentTypeLettre::TEXT_HTML,
         };
 
-        let body= match self.content {
+        let body = match self.content {
             Content::Default => "",
             Content::Plain(str) | Content::Html(str) => str,
         };

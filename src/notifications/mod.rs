@@ -11,14 +11,14 @@ use crate::notifications::notifiers::linux::{LinuxDBusNotifier, LinuxLibNotifyNo
 use crate::notifications::notifiers::windows::{WindowsLegacyNotifier, WindowsNotifier};
 
 /// Main notification structure that handles cross-platform notifications
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```
 /// use stblib::notifications::Notifier;
 /// let notification = Notifier::new(
 ///     "Title",
-///     "Message", 
+///     "Message",
 ///     "App Name",
 ///     "normal",
 ///     "",
@@ -28,7 +28,7 @@ use crate::notifications::notifiers::windows::{WindowsLegacyNotifier, WindowsNot
 /// );
 /// notification.build().send()?;
 /// ```
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Notifier {
     pub title: String,
     pub message: String,
@@ -38,16 +38,16 @@ pub struct Notifier {
     pub audio: Option<String>,
     pub timeout: i32,
     pub enable_logging: bool,
-    pub internal_notifier: InternalNotifierObject,
+    pub platform_notifier: PlatformSpecificNotifier,
     pub actions: Vec<(String, String)>,
 }
 
 /// Internal structure to handle OS-specific notification settings
-#[derive(Debug)]
-pub struct InternalNotifierObject {
-    pub system: &'static OS,
-    pub override_windows_version_detection: bool,
-    pub override_windows_version: Option<String>,
+#[derive(Debug, Clone)]
+pub struct PlatformSpecificNotifier {
+    pub os: &'static OS,
+    pub bypass_windows_version_detection: bool,
+    pub windows_version_override: Option<String>,
 }
 
 impl Default for Notifier {
@@ -67,52 +67,53 @@ impl Default for Notifier {
 
 impl Notifier {
     /// Creates a new notification with the specified parameters
-    /// 
+    ///
     /// # Arguments
-    /// 
-    /// * `default_notification_title` - The title of the notification
-    /// * `default_notification_message` - The message content
-    /// * `default_notification_application_name` - The application name
-    /// * `default_notification_urgency` - Urgency level ("low", "normal", "critical")
-    /// * `default_notification_icon` - Path to the notification icon
-    /// * `default_notification_audio` - Optional audio file to play
+    ///
+    /// * `title` - The title of the notification
+    /// * `message` - The message content
+    /// * `application_name` - The application name
+    /// * `urgency` - Urgency level ("low", "normal", "critical")
+    /// * `icon_path` - Path to the notification icon
+    /// * `audio_path` - Optional audio file to play
+    /// * `timeout` - Duration in milliseconds before the notification closes
     /// * `enable_logging` - Enable debug logging
     #[must_use]
     pub fn new(
-        default_notification_title: impl ToString,
-        default_notification_message: impl ToString,
-        default_notification_application_name: impl ToString,
-        default_notification_urgency: impl ToString,
-        default_notification_icon: impl ToString,
-        default_notification_audio: Option<String>,
-        default_timeout: i32,
+        title: impl ToString,
+        message: impl ToString,
+        application_name: impl ToString,
+        urgency: impl ToString,
+        icon_path: impl ToString,
+        audio_path: Option<String>,
+        timeout: i32,
         enable_logging: bool,
     ) -> Self {
         Self {
-            title: default_notification_title.to_string(),
-            message: default_notification_message.to_string(),
-            application_name: default_notification_application_name.to_string(),
-            urgency: default_notification_urgency.to_string(),
-            icon: default_notification_icon.to_string(),
-            audio: default_notification_audio,
-            timeout: default_timeout,
+            title: title.to_string(),
+            message: message.to_string(),
+            application_name: application_name.to_string(),
+            urgency: urgency.to_string(),
+            icon: icon_path.to_string(),
+            audio: audio_path,
+            timeout,
             enable_logging,
-            internal_notifier: InternalNotifierObject {
-                system: &OS::Undefined,
-                override_windows_version_detection: false,
-                override_windows_version: None,
+            platform_notifier: PlatformSpecificNotifier {
+                os: &OS::Undefined,
+                bypass_windows_version_detection: false,
+                windows_version_override: None,
             },
             actions: Vec::new(),
         }
     }
 
     /// Builds the notification by detecting the current operating system
-    /// 
+    ///
     /// This method determines the appropriate notification system based on
     /// the current OS and version.
     pub fn build(mut self) -> Self {
-        if self.internal_notifier.system == &OS::Undefined {
-            self.internal_notifier.system = match std::env::consts::OS {
+        if self.platform_notifier.os == &OS::Undefined {
+            self.platform_notifier.os = match std::env::consts::OS {
                 "linux" => &OS::Linux,
                 "windows" => {
                     let version = os_info::get().version().to_string();
@@ -134,9 +135,9 @@ impl Notifier {
     }
 
     /// Sends the notification using the appropriate system notifier
-    /// 
+    ///
     /// # Errors
-    /// 
+    ///
     /// Returns `NotificationError` if:
     /// * The operating system is not supported
     /// * The notification fails to send
@@ -145,19 +146,19 @@ impl Notifier {
             println!("Sending notification");
         }
 
-        match self.internal_notifier.system {
+        match self.platform_notifier.os {
             #[cfg(target_os = "linux")]
             OS::Linux => Ok(LinuxDBusNotifier::new(self).notification_send()),
-            
+
             #[cfg(target_os = "linux")]
             OS::LinuxLibNotify => Ok(LinuxLibNotifyNotifier::new(self).notification_send()),
-            
+
             #[cfg(target_os = "windows")]
             OS::Windows => Ok(WindowsNotifier::new(self).notification_send()),
-            
+
             #[cfg(target_os = "windows")]
             OS::WindowsLegacy => Ok(WindowsLegacyNotifier::new(self).notification_send()),
-            
+
             OS::Undefined => {
                 let err = NotificationError::UndefinedOS;
                 if self.enable_logging {
@@ -176,9 +177,9 @@ impl Notifier {
     }
 
     /// Creates a custom notification from an existing configuration
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `notifier` - An existing Notifier instance to clone
     #[must_use]
     pub const fn custom(notifier: Self) -> Self {
@@ -186,13 +187,13 @@ impl Notifier {
     }
 
     /// Adds action buttons to the notification
-    /// 
+    ///
     /// # Arguments
-    /// 
+    ///
     /// * `actions` - Vector of (id, label) pairs for the buttons
-    /// 
+    ///
     /// # Example
-    /// 
+    ///
     /// ```
     /// use stblib::notifications::Notifier;
     /// let notifier = Notifier::default()
@@ -207,15 +208,15 @@ impl Notifier {
     }
 
     /// Sends the notification with custom actions and waits for user response
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// * `Ok(Some(String))` - The ID of the action that was clicked
     /// * `Ok(None)` - Notification was closed without clicking any action
     /// * `Err(NotificationError)` - If the notification fails
-    /// 
+    ///
     /// # Example
-    /// 
+    ///
     /// ```
     /// use stblib::notifications::Notifier;
     /// let notifier = Notifier::default()
@@ -230,16 +231,20 @@ impl Notifier {
     ///     Err(e) => println!("Error: {:?}", e),
     /// }
     /// ```
-    pub fn send_with_actions_and_wait(self, actions: Vec<(String, String)>) -> Result<Option<String>, NotificationError> {
-        match self.internal_notifier.system {
+    pub fn send_with_actions_and_wait(
+        self,
+        actions: Vec<(String, String)>,
+    ) -> Result<Option<String>, NotificationError> {
+        // Currently only Linux (DBus) supports actions
+        match self.platform_notifier.os {
             #[cfg(target_os = "linux")]
             OS::Linux => {
                 let dbus_notifier = LinuxDBusNotifier::new(self);
-                dbus_notifier.send_with_actions_and_wait(actions)
+                dbus_notifier
+                    .send_with_actions_and_wait(actions)
                     .map_err(|e| NotificationError::SendError(e))
-            },
+            }
             _ => {
-                // For other platforms, send normally and return None
                 self.send()?;
                 Ok(None)
             }
@@ -256,5 +261,4 @@ pub enum NotificationError {
     UndefinedOS,
     #[error("Failed to send notification: {0}")]
     SendError(String),
-    
 }
