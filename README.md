@@ -1,24 +1,45 @@
-# stblib-rust
-stblib is a simple library used mostly by Strawberry Foundation's Projects.
-stblib offers many different functions for simplifying the writing of Rust code. These include the following features: 
+# libstrawberry 🍓
 
-* Localization system with language strings
-* Strawberry Chat API Wrapper for own Rust-based clients
-* Scapi for programming bots for Strawberry Chat (currently incomplete)
-* Logging for uncomplicated and simple logging of *some* things in a CLI application
-* Notifications to send notifications (who would have thought it)
-* Email to send e-mails
-* External plugin functionality
+A modern, versatile Rust library powering Strawberry Foundation's projects and more!
 
-and some (kinda) useful utilities!
+## ✨ Features
 
-Visit our [documentation](https://docs.rs/stblib/latest/stblib/) on docs.rs for "detailed" documentation of stblib
+- 🌍 Localization system with language strings
+- 💬 Strawberry Chat API wrapper for custom Rust clients
+- 🤖 Scapi: Bot framework for Strawberry Chat (WIP)
+- 📋 Simple & flexible logging for CLI apps
+- 🔔 Cross-platform notifications
+- 📧 Send emails easily
+- 🧩 External plugin support
+- 🛠️ Handy utilities for everyday Rust
 
-## Featured projects that use stblib
-* [Strawberry Chat](https://github.com/Strawberry-Foundations/strawberry-chat) by Strawberry Foundations
-* [Strawberry Chat Client](https://github.com/Strawberry-Foundations/strawberry-chat-client) by Strawberry Foundations
-* [Cranberry](https://github.com/Strawberry-Foundations/cranberry) by Strawberry Foundations
-* [StrawberryOS Manager (somgr)](https://github.com/Strawberry-Foundations/somgr) by Strawberry Foundations
-* [Sidotool](https://github.com/Strawberry-Foundations/sidotool) by matteodev8 (at Strawberry Foundations)
-* [Tunneled](https://github.com/Strawberry-Foundations/tunneled) by Strawberry Foundations
-* [Spkg Rust-rewrite](https://github.com/Strawberry-Foundations/spkg/tree/rust) by Strawberry Foundations
+## 🚀 Installation
+
+Add libstrawberry to your Cargo.toml:
+```toml
+[dependencies]
+libstrawberry = { version = "*", features = ["full"] }
+```
+
+Find the latest version on crates.io: https://crates.io/crates/libstrawberry
+
+## 📚 Documentation & Examples
+
+See the docs.rs documentation: https://docs.rs/libstrawberry/latest/libstrawberry/ for details and usage examples.
+
+## 🏆 Projects using libstrawberry
+
+- [Strawberry Chat](https://github.com/Strawberry-Foundations/strawberry-chat)
+- [Strawberry Chat Client](https://github.com/Strawberry-Foundations/strawberry-chat-client)
+- [Cranberry](https://github.com/Strawberry-Foundations/cranberry)
+- [StrawberryOS Manager (somgr)](https://github.com/Strawberry-Foundations/somgr)
+- [Tunneled](https://github.com/Strawberry-Foundations/tunneled)
+- [Spkg Rust-rewrite](https://github.com/Strawberry-Foundations/spkg/tree/rust)
+
+## 🤝 Contributing
+
+Contributions, bug reports, and feature requests are welcome! See CONTRIBUTING.md for details.
+
+## 📄 License
+
+This project is licensed under the AGPL 3.0 License (See LICENSE).
