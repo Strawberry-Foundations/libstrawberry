@@ -7,6 +7,7 @@ use crate::logging::formats::LogFormat;
 use crate::logging::level::LogLevel;
 use crate::time::current_time;
 use std::fmt::Display;
+use std::panic;
 
 /// A simple console logger struct with custom formatting and more
 pub struct Logger {
@@ -18,10 +19,7 @@ impl Logger {
     /// Create a new Logger object
     #[must_use]
     pub const fn new(features: LoggingFeatures, format: LogFormat) -> Self {
-        Self {
-            features,
-            format,
-        }
+        Self { features, format }
     }
 
     /// Will parse some logging things >.>
@@ -72,14 +70,14 @@ impl Logger {
         println!("{}", self.parse(&LogLevel::INFO, &message));
     }
 
-    /// Error log function
-    pub fn error(&self, message: impl Display) {
-        println!("{}", self.parse(&LogLevel::ERROR, &message));
-    }
-
     /// Warning log function
     pub fn warning(&self, message: impl Display) {
         println!("{}", self.parse(&LogLevel::WARNING, &message));
+    }
+
+    /// Error log function
+    pub fn error(&self, message: impl Display) {
+        println!("{}", self.parse(&LogLevel::ERROR, &message));
     }
 
     /// Critical log function
@@ -87,27 +85,10 @@ impl Logger {
         println!("{}", self.parse(&LogLevel::CRITICAL, &message));
     }
 
-    /// Panic log function
-    pub fn panic(&self, message: impl Display) {
-        println!("{}", self.parse(&LogLevel::PANIC, &message));
-    }
-
     /// Panic log function which will exit with exit code 1
-    pub fn error_panic(&self, message: impl Display) -> ! {
-        println!("{}", self.parse(&LogLevel::ERROR, &message));
-        std::process::exit(1);
-    }
-
-    /// Critical log function which will exit with exit code 1
-    pub fn critical_panic(&self, message: impl Display) -> ! {
-        println!("{}", self.parse(&LogLevel::CRITICAL, &message));
-        std::process::exit(1);
-    }
-
-    /// Panic log function which will exit with exit code 1
-    pub fn panic_crash(&self, message: impl Display) -> ! {
+    pub fn panic(&self, message: impl Display) -> ! {
         println!("{}", self.parse(&LogLevel::PANIC, &message));
-        std::process::exit(1);
+        panic!("Panic invoked by logger, please check log for a detailed description");
     }
 }
 
