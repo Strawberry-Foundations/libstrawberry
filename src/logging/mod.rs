@@ -94,7 +94,7 @@ impl Logger {
 
 impl Default for Logger {
     fn default() -> Self {
-        Logger {
+        Self {
             features: LoggingFeatures {
                 enable_file_handler: false,
             },
