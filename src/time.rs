@@ -2,8 +2,8 @@ use chrono::prelude::*;
 use std::thread;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-#[derive(Debug, PartialEq)]
-/// Days of the week as an enum, used for the get_weekday_from_epoch() function
+#[derive(Debug, PartialEq, Eq)]
+/// Days of the week as an enum, used for the `get_weekday_from_epoch()` function
 pub enum Weekday {
     Monday,
     Tuesday,
@@ -41,7 +41,7 @@ pub fn unix_time() -> u64 {
 }
 
 /// Returns the weekday as an enum based on the provided Unix time
-pub fn get_weekday_from_epoch(time: u64) -> Option<Weekday> {
+#[must_use] pub fn get_weekday_from_epoch(time: u64) -> Option<Weekday> {
     let weekday = (f64::floor(time as f64 / 86400.) + 4.) % 7.;
 
     match weekday {
