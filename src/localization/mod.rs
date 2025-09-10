@@ -70,11 +70,10 @@ impl Localization {
         for param in params {
             if let Some(idx) = message.find("%s") {
                 message.replace_range(idx..idx + 2, &param.to_string());
-            } else if let Some(idx) = message.find("%d") {
-                if let Ok(value) = param.to_string().parse::<i64>() {
+            } else if let Some(idx) = message.find("%d")
+                && let Ok(value) = param.to_string().parse::<i64>() {
                     message.replace_range(idx..idx + 2, &value.to_string());
                 }
-            }
         }
         message
     }
