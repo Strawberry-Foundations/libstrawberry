@@ -40,14 +40,14 @@ pub fn default_fmt() -> LogFormat {
 #[must_use]
 pub fn basic_fmt() -> LogFormat {
     LogFormat {
-        info: format!("[%<levelname>%]: [%<message>%]"),
-        error: format!("[%<levelname>%]: [%<message>%]"),
-        ok: format!("[%<levelname>%]: [%<message>%]"),
-        warning: format!("[%<levelname>%]: [%<message>%]"),
-        critical: format!("[%<levelname>%]: [%<message>%]"),
-        panic: format!("[%<levelname>%]: [%<message>%]"),
+        info: "[%<levelname>%]: [%<message>%]".to_string(),
+        error: "[%<levelname>%]: [%<message>%]".to_string(),
+        ok: "[%<levelname>%]: [%<message>%]".to_string(),
+        warning: "[%<levelname>%]: [%<message>%]".to_string(),
+        critical: "[%<levelname>%]: [%<message>%]".to_string(),
+        panic: "[%<levelname>%]: [%<message>%]".to_string(),
         log_options: LogFormatOptions {
-            timestamp_format: "".to_string(),
+            timestamp_format: String::new(),
             levelname_lowercase: false,
         },
     }
