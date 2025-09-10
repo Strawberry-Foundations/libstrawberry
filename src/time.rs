@@ -41,17 +41,17 @@ pub fn unix_time() -> u64 {
 }
 
 /// Returns the weekday as an enum based on the provided Unix time
-#[must_use] pub fn get_weekday_from_epoch(time: u64) -> Option<Weekday> {
-    let weekday = (f64::floor(time as f64 / 86400.) + 4.) % 7.;
+#[must_use] pub const fn get_weekday_from_epoch(time: u64) -> Option<Weekday> {
+    let weekday = ((time / 86400 + 4) % 7) as u8;
 
     match weekday {
-        0. => Some(Weekday::Sunday),
-        1. => Some(Weekday::Monday),
-        2. => Some(Weekday::Tuesday),
-        3. => Some(Weekday::Wednesday),
-        4. => Some(Weekday::Thursday),
-        5. => Some(Weekday::Friday),
-        6. => Some(Weekday::Saturday),
+        0 => Some(Weekday::Sunday),
+        1 => Some(Weekday::Monday),
+        2 => Some(Weekday::Tuesday),
+        3 => Some(Weekday::Wednesday),
+        4 => Some(Weekday::Thursday),
+        5 => Some(Weekday::Friday),
+        6 => Some(Weekday::Saturday),
         _ => None,
     }
 }
