@@ -5,7 +5,7 @@
 pub mod colors;
 pub mod constants;
 pub mod email;
-pub mod external;
+pub mod ext;
 pub mod file;
 #[cfg(feature = "strawberryid")]
 pub mod id;
