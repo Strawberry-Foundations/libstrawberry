@@ -86,6 +86,8 @@ impl Logger {
     }
 
     /// Panic log function which will exit with exit code 1
+    /// # Panics
+    /// This function will always panic
     pub fn panic(&self, message: impl Display) -> ! {
         println!("{}", self.parse(&LogLevel::PANIC, &message));
         panic!("Panic invoked by logger, please check log for a detailed description");
