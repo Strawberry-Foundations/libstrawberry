@@ -3,7 +3,7 @@
 /// for certain other things that improve your program.
 /// Plugins can be programmed by the open source community in Rust
 /// ```
-/// use libstrawberry::external::plugin::{Plugin, PluginProperties};
+/// use libstrawberry::ext::plugin::{Plugin, PluginProperties};
 /// pub struct ExamplePlugin;
 ///
 /// impl Plugin for ExamplePlugin {
