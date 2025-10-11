@@ -58,7 +58,7 @@ impl Localization {
                 ("{underline}", UNDERLINE),
             ];
             let mut result = raw;
-            for (ph, val) in replacements.iter() {
+            for (ph, val) in &replacements {
                 result = result.replace(ph, val);
             }
             result
