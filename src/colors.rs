@@ -5,6 +5,7 @@ pub const UNDERLINE: &str = "\x1b[4m";
 pub const STRIKETHROUGH: &str = "\x1b[9m";
 
 pub const C_RESET: &str = "\x1b[0m";
+pub const CRESET: &str = C_RESET;
 
 // Basic Colors
 pub const BLACK: &str = "\x1b[30m";
