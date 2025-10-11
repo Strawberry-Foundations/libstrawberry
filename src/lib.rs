@@ -3,7 +3,6 @@
 #![allow(dead_code)]
 
 pub mod colors;
-pub mod constants;
 pub mod email;
 pub mod ext;
 pub mod file;
@@ -21,3 +20,4 @@ pub mod string;
 pub mod time;
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+pub const STRAWBERRY_ID_API: &str = "https://id.strawberryfoundations.org/v2/";
