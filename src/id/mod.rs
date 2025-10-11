@@ -1,4 +1,4 @@
-use crate::constants::STRAWBERRY_ID_API;
+use crate::STRAWBERRY_ID_API;
 use crate::id::credentials::StrawberryIdCredentials;
 use crate::id::error::ApiError;
 use eyre::Error;
