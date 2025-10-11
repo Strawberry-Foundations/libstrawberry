@@ -44,17 +44,24 @@ impl Localization {
             .to_string();
 
         if self.color_placeholders {
-            raw.replace("{red}", RED)
-                .replace("{green}", GREEN)
-                .replace("{yellow}", YELLOW)
-                .replace("{blue}", BLUE)
-                .replace("{magenta}", MAGENTA)
-                .replace("{cyan}", CYAN)
-                .replace("{white}", WHITE)
-                .replace("{reset}", RESET)
-                .replace("{creset}", C_RESET)
-                .replace("{bold}", BOLD)
-                .replace("{underline}", UNDERLINE)
+            let replacements = [
+                ("{red}", RED),
+                ("{green}", GREEN),
+                ("{yellow}", YELLOW),
+                ("{blue}", BLUE),
+                ("{magenta}", MAGENTA),
+                ("{cyan}", CYAN),
+                ("{white}", WHITE),
+                ("{reset}", RESET),
+                ("{creset}", C_RESET),
+                ("{bold}", BOLD),
+                ("{underline}", UNDERLINE),
+            ];
+            let mut result = raw;
+            for (ph, val) in replacements.iter() {
+                result = result.replace(ph, val);
+            }
+            result
         } else {
             raw
         }
@@ -65,17 +72,50 @@ impl Localization {
     /// Panics if the string key is missing.
     #[must_use]
     pub fn get_with_params(&self, key: &str, params: &[&dyn std::fmt::Display]) -> String {
-        let mut message = self.get(key);
-
-        for param in params {
-            if let Some(idx) = message.find("%s") {
-                message.replace_range(idx..idx + 2, &param.to_string());
-            } else if let Some(idx) = message.find("%d")
-                && let Ok(value) = param.to_string().parse::<i64>() {
-                    message.replace_range(idx..idx + 2, &value.to_string());
+        let message = self.get(key);
+        let mut param_idx = 0;
+        let mut result = String::new();
+        let mut chars = message.chars().peekable();
+        while let Some(c) = chars.next() {
+            if c == '%' {
+                if let Some(&next) = chars.peek() {
+                    match next {
+                        's' => {
+                            chars.next();
+                            if param_idx < params.len() {
+                                result.push_str(&params[param_idx].to_string());
+                                param_idx += 1;
+                            } else {
+                                result.push_str("%s");
+                            }
+                        }
+                        'd' => {
+                            chars.next();
+                            if param_idx < params.len() {
+                                if let Ok(value) = params[param_idx].to_string().parse::<i64>() {
+                                    result.push_str(&value.to_string());
+                                } else {
+                                    result.push_str(&params[param_idx].to_string());
+                                }
+                                param_idx += 1;
+                            } else {
+                                result.push_str("%d");
+                            }
+                        }
+                        _ => {
+                            result.push('%');
+                            result.push(next);
+                            chars.next();
+                        }
+                    }
+                } else {
+                    result.push('%');
                 }
+            } else {
+                result.push(c);
+            }
         }
-        message
+        result
     }
 }
 
