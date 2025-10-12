@@ -55,7 +55,7 @@ impl BaseNotifier for LinuxLibNotifyNotifier {
                 true
             }
             Err(err) => {
-                println!("Error sending notification: {}", err);
+                eprintln!("Error sending notification: {}", err);
                 false
             }
         }
@@ -95,7 +95,7 @@ impl BaseNotifier for LinuxLibNotifyNotifier {
         {
             Ok(output) => output,
             Err(err) => {
-                println!("Error sending notification with actions: {}", err);
+                eprintln!("Error sending notification with actions: {}", err);
                 return Err(format!("Error: {}", err));
             }
         };
@@ -193,7 +193,9 @@ impl BaseNotifier for LinuxDBusNotifier {
             }
         };
 
-        println!("Notification sent with ID: {}", id);
+        if self.notifier.enable_logging {
+            eprintln!("Notification sent with ID: {}", id);
+        }
 
         true
     }
@@ -235,7 +237,7 @@ impl BaseNotifier for LinuxDBusNotifier {
             .map_err(|e| format!("Failed to send notification: {}", e))?;
 
         if self.notifier.enable_logging {
-            eprintln!("Notification sent with ID: {}", notification_id);
+            println!("Notification sent with ID: {}", notification_id);
         }
 
         let result = Arc::new(Mutex::new(None::<String>));
