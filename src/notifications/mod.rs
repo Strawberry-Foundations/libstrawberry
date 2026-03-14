@@ -15,7 +15,7 @@ use crate::notifications::notifiers::windows::{WindowsLegacyNotifier, WindowsNot
 /// # Examples
 ///
 /// ```
-/// use stblib::notifications::Notifier;
+/// use libstrawberry::notifications::Notifier;
 /// let notification = Notifier::new(
 ///     "Title",
 ///     "Message",
@@ -195,7 +195,7 @@ impl Notifier {
     /// # Example
     ///
     /// ```
-    /// use stblib::notifications::Notifier;
+    /// use libstrawberry::notifications::Notifier;
     /// let notifier = Notifier::default()
     ///     .with_actions(vec![
     ///         ("yes".to_string(), "Yes".to_string()),
@@ -218,7 +218,7 @@ impl Notifier {
     /// # Example
     ///
     /// ```
-    /// use stblib::notifications::Notifier;
+    /// use libstrawberry::notifications::Notifier;
     /// let notifier = Notifier::default()
     ///     .with_actions(vec![
     ///         ("yes".to_string(), "Yes".to_string()),

@@ -1,7 +1,7 @@
 #![cfg(feature = "stbchat")]
 #![allow(clippy::future_not_send)]
 use tokio::io::{ReadHalf, WriteHalf, split};
-/// TODO: Use built-in logging from stblib
+/// TODO: Use built-in logging from libstrawberry
 use tokio::net::TcpStream;
 
 use num_traits::ToPrimitive;
@@ -25,7 +25,7 @@ use crate::stbchat::packet::{ClientPacket, ServerPacket};
 use crate::time::current_time;
 
 const VERSION: &str = "1.0.0";
-const FULL_VERSION: &str = "_dev-vacakes-stblib::rs_stbmv3";
+const FULL_VERSION: &str = "_dev-vacakes-libstrawberry::rs_stbmv3";
 const AUTHORS: [&str; 1] = ["Juliandev02"];
 const CODENAME: &str = "Vanilla Cake";
 const API: &str = "https://api.strawberryfoundations.xyz/v1/";

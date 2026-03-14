@@ -1,4 +1,4 @@
-/// Struct for creating a custom featureset for `stblib::logger`
+/// Struct for creating a custom featureset for `libstrawberry::logger`
 pub struct LoggingFeatures {
     pub enable_file_handler: bool,
 }
