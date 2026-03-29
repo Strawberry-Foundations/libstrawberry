@@ -4,7 +4,7 @@ version = "1.4.4"
 edition = "2024"
 authors = [
   "Juliandev02 <julian@strawberryfoundations.org>",
-  "matteodev8 <me@matteodev.xyz>",
+  "stackallocator <me@stackallocator.dev>",
   "Paddyk45",
 ]
 description = "libstrawberry is a simple library that takes over and simplifies important and useful tasks."
